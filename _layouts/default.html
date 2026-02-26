@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: " en-US" }}">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <title>{{ page.title }} - {{ site.title }}</title>
+  <link rel="stylesheet" href="{{ "/assets/css/styles.css" | relative_url }}">
+  <link rel="stylesheet" href="{{ "/assets/css/syntax-highlighting.css" | relative_url }}">
+</head>
+
+<body class="m-auto max-w-2xl p-10 font-mono bg-stone-100 dark:bg-neutral-800">
+  <header class="mb-8 pb-4 border-b border-stone-300 dark:border-neutral-600">
+    <nav class="flex items-center justify-between">
+      <a href="{{ '/' | relative_url }}" class="text-lg font-bold text-stone-800 dark:text-stone-200 hover:text-stone-600 dark:hover:text-stone-400">
+        {{ site.title }}
+      </a>
+      <a href="{{ '/about' | relative_url }}" class="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200">
+        About
+      </a>
+    </nav>
+  </header>
+  {{ content }}
+  {% include footer.html %}
+
+  <script>
+    let colors = ["#24d05a", "#eb4888", "#10a2f5", "#e9bc3f"];
+
+    function getRandomColor() {
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function setRandomLinkColor() {
+      Array.from(document.getElementsByTagName("a")).forEach((e) => {
+        e.style.textDecorationColor = getRandomColor();
+      });
+    }
+
+    function setColorHoverListener() {
+      Array.from(document.querySelectorAll("a, button")).forEach((e) => {
+        e.addEventListener("mouseover", setRandomLinkColor);
+      });
+    }
+
+    (function () {
+      setRandomLinkColor();
+      setColorHoverListener();
+    })();
+  </script>
+</body>
+
+</html>

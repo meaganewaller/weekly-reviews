@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.0.0",
+  "week": {
+    "start": "2026-02-23",
+    "end": "2026-03-01",
+    "generated_at": "2026-02-26T21:05:55.997206Z"
+  },
+  "totals": {
+    "events": 968,
+    "sessions": 22,
+    "projects_touched": 4,
+    "writes": 410,
+    "failures": 437,
+    "large_changes": 13,
+    "reversals": 0,
+    "decisions_documented": 2,
+    "test_runs": 100,
+    "dependency_changes": 0,
+    "files_modified": 164
+  },
+  "derived_metrics": {
+    "failure_rate": 0.4514,
+    "test_stability_rate": 0.44,
+    "test_runs_passed": 44
+  },
+  "projects": [
+    {
+      "project": "dotfiles",
+      "events": 489,
+      "sessions": 7,
+      "writes": 217,
+      "failures": 257,
+      "tradeoffs": 2,
+      "large_changes": 13,
+      "reversals": 0
+    },
+    {
+      "project": "pull",
+      "events": 453,
+      "sessions": 10,
+      "writes": 185,
+      "failures": 169,
+      "tradeoffs": 0,
+      "large_changes": 0,
+      "reversals": 0
+    },
+    {
+      "project": "reviews",
+      "events": 17,
+      "sessions": 2,
+      "writes": 7,
+      "failures": 10,
+      "tradeoffs": 0,
+      "large_changes": 0,
+      "reversals": 0
+    },
+    {
+      "project": "unknown",
+      "events": 9,
+      "sessions": 3,
+      "writes": 1,
+      "failures": 1,
+      "tradeoffs": 0,
+      "large_changes": 0,
+      "reversals": 0
+    }
+  ],
+  "events_by_type": {
+    "tool_failure": 437,
+    "tool_write": 410,
+    "test_run": 100,
+    "large_change": 13,
+    "task_completed": 6,
+    "decision_tradeoff": 2
+  },
+  "top_friction_domains": [
+    {
+      "domain": "state",
+      "count": 382
+    },
+    {
+      "domain": "unknown",
+      "count": 48
+    },
+    {
+      "domain": "dependency",
+      "count": 3
+    },
+    {
+      "domain": "type",
+      "count": 2
+    },
+    {
+      "domain": "syntax",
+      "count": 1
+    },
+    {
+      "domain": "network",
+      "count": 1
+    }
+  ],
+  "top_friction_subdomains": [
+    {
+      "subdomain": "state:file-not-found",
+      "count": 176
+    },
+    {
+      "subdomain": "state:resource-limit",
+      "count": 164
+    },
+    {
+      "subdomain": "state:command-failed",
+      "count": 31
+    },
+    {
+      "subdomain": "state:type-mismatch",
+      "count": 8
+    },
+    {
+      "subdomain": "dependency:ruby-bundler",
+      "count": 3
+    },
+    {
+      "subdomain": "state:command-file-missing",
+      "count": 3
+    },
+    {
+      "subdomain": "type:ruby-sorbet",
+      "count": 2
+    },
+    {
+      "subdomain": "syntax:parse",
+      "count": 1
+    },
+    {
+      "subdomain": "network:timeout",
+      "count": 1
+    }
+  ],
+  "top_principles_invoked": [
+    {
+      "principle": "self-contained artifacts",
+      "count": 1
+    },
+    {
+      "principle": "progressive enhancement",
+      "count": 1
+    },
+    {
+      "principle": "convention over configuration",
+      "count": 1
+    },
+    {
+      "principle": "skills should be self-contained",
+      "count": 1
+    },
+    {
+      "principle": "explicit over implicit",
+      "count": 1
+    },
+    {
+      "principle": "documentation as specification",
+      "count": 1
+    }
+  ],
+  "top_skills_used": [
+    {
+      "skill": "application development",
+      "count": 400
+    },
+    {
+      "skill": "domain modeling",
+      "count": 6
+    },
+    {
+      "skill": "developer tooling",
+      "count": 4
+    }
+  ],
+  "top_files_modified": [
+    "/Users/meagan.waller/.claude/hooks/Stop/leverage-evaluator.sh",
+    "/Users/meagan.waller/.claude/plans/luminous-wondering-steele.md",
+    "/Users/meagan.waller/.claude/plans/mighty-roaming-wreath.md",
+    "/Users/meagan.waller/.claude/plans/scalable-dazzling-minsky.md",
+    "/Users/meagan.waller/.claude/plans/tranquil-bubbling-liskov.md",
+    "/Users/meagan.waller/.claude/reviews/week-of-2026-02-23/review.md",
+    "/Users/meagan.waller/.claude/settings.json",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/.github/workflows/test-dotfiles-setup.yml",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/.gitignore",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/.mise-tasks/README.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/.pre-commit-config.yaml",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/ARCHITECTURE.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/README.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/bin/link-dotfiles",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/bin/tradeoff-gate",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/README.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/docs/telemetry-architecture.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/docs/workflow-scenarios.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/README.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PostToolUse/async-test-runner.sh"
+  ]
+}
