@@ -20,6 +20,8 @@
 
 title: Weekly Engineering Reviews
 author: Meagan Waller
+description: Automated weekly engineering reviews generated from development activity
+rss-description: true
 
 navbar-links:
   About this site: "about"
