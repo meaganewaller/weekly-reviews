@@ -9,15 +9,29 @@
   <link rel="stylesheet" href="{{ "/assets/css/syntax-highlighting.css" | relative_url }}">
 </head>
 
-<body class="m-auto max-w-2xl p-10 font-mono bg-stone-100 dark:bg-neutral-800">
+<body class="m-auto max-w-4xl p-10 font-mono bg-stone-100 dark:bg-neutral-800">
   <header class="mb-8 pb-4 border-b border-stone-300 dark:border-neutral-600">
-    <nav class="flex items-center justify-between">
-      <a href="{{ '/' | relative_url }}" class="text-lg font-bold text-stone-800 dark:text-stone-200 hover:text-stone-600 dark:hover:text-stone-400">
-        {{ site.title }}
-      </a>
-      <a href="{{ '/about' | relative_url }}" class="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200">
-        About
-      </a>
+    <nav class="flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <a href="{{ '/' | relative_url }}" class="text-lg font-bold text-stone-800 dark:text-stone-200 hover:text-stone-600 dark:hover:text-stone-400">
+          {{ site.title }}
+        </a>
+        <div class="flex gap-4 text-sm">
+          <a href="{{ '/about' | relative_url }}" class="text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200">About</a>
+          <a href="{{ '/how-it-works' | relative_url }}" class="text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200">How It Works</a>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-3 text-xs">
+        <a href="{{ '/data-capture' | relative_url }}" class="text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300">Data Capture</a>
+        <span class="text-stone-300 dark:text-stone-600">|</span>
+        <a href="{{ '/friction-taxonomy' | relative_url }}" class="text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300">Friction Taxonomy</a>
+        <span class="text-stone-300 dark:text-stone-600">|</span>
+        <a href="{{ '/review-pipeline' | relative_url }}" class="text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300">Review Pipeline</a>
+        <span class="text-stone-300 dark:text-stone-600">|</span>
+        <a href="{{ '/hooks-and-cues' | relative_url }}" class="text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300">Hooks & Cues</a>
+        <span class="text-stone-300 dark:text-stone-600">|</span>
+        <a href="{{ '/event-schema' | relative_url }}" class="text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300">Event Schema</a>
+      </div>
     </nav>
   </header>
   {{ content }}

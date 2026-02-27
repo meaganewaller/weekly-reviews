@@ -1,29 +1,35 @@
 ---
-layout: base
+layout: default
 ---
 
-{% include header.html type="page" %}
+<article class="page">
+  {% if page.title %}
+  <header class="mb-8">
+    <h1 class="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-2">
+      {{ page.title }}
+    </h1>
+    {% if page.subtitle %}
+    <p class="text-sm text-stone-500 dark:text-stone-400">
+      {{ page.subtitle }}
+    </p>
+    {% endif %}
+  </header>
+  {% endif %}
 
-<main class="{% if page.full-width %} container-fluid {% else %} container-md {% endif %}">
-  <div class="row">
-    <div class="{% if page.full-width %} col {% else %} col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 {% endif %}">
-      {% if page.before-content %}
-        <div class="before-content">
-          {% for file in page.before-content %}
-            {% include {{ file }} %}
-          {% endfor %}
-        </div>
-      {% endif %}
-
-      {{ content }}
-
-      {% if page.after-content %}
-        <div class="after-content">
-          {% for file in page.after-content %}
-            {% include {{ file }} %}
-          {% endfor %}
-        </div>
-      {% endif %}
-    </div>
-  </div>
-</main>
+  <section class="prose prose-stone dark:prose-invert prose-sm max-w-none
+                  prose-headings:font-semibold prose-headings:text-stone-800 dark:prose-headings:text-stone-100
+                  prose-h2:text-lg prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-stone-200 dark:prose-h2:border-stone-600
+                  prose-h3:text-base prose-h3:mt-6
+                  prose-p:text-stone-600 dark:prose-p:text-stone-300
+                  prose-li:text-stone-600 dark:prose-li:text-stone-300
+                  prose-strong:text-stone-700 dark:prose-strong:text-stone-200
+                  prose-a:text-blue-600 dark:prose-a:text-blue-400
+                  prose-code:text-xs prose-code:bg-stone-100 dark:prose-code:bg-stone-700 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+                  prose-pre:bg-stone-800 dark:prose-pre:bg-stone-900 prose-pre:text-stone-100 prose-pre:text-xs prose-pre:overflow-x-auto
+                  prose-table:text-xs
+                  prose-th:text-left prose-th:text-stone-700 dark:prose-th:text-stone-200 prose-th:font-semibold prose-th:border-b prose-th:border-stone-300 dark:prose-th:border-stone-600 prose-th:pb-2
+                  prose-td:border-b prose-td:border-stone-200 dark:prose-td:border-stone-700 prose-td:py-2
+                  prose-img:rounded-lg prose-img:shadow-md">
+    {{ content }}
+  </section>
+</article>

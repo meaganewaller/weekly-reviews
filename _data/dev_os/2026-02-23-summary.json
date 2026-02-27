@@ -3,61 +3,61 @@
   "week": {
     "start": "2026-02-23",
     "end": "2026-03-01",
-    "generated_at": "2026-02-26T21:05:55.997206Z"
+    "generated_at": "2026-02-27T03:57:11.373623Z"
   },
   "totals": {
-    "events": 968,
-    "sessions": 22,
+    "events": 1259,
+    "sessions": 29,
     "projects_touched": 4,
-    "writes": 410,
-    "failures": 437,
+    "writes": 541,
+    "failures": 568,
     "large_changes": 13,
-    "reversals": 0,
+    "reversals": 2,
     "decisions_documented": 2,
-    "test_runs": 100,
+    "test_runs": 116,
     "dependency_changes": 0,
-    "files_modified": 164
+    "files_modified": 208
   },
   "derived_metrics": {
-    "failure_rate": 0.4514,
-    "test_stability_rate": 0.44,
-    "test_runs_passed": 44
+    "failure_rate": 0.4512,
+    "test_stability_rate": 0.431,
+    "test_runs_passed": 50
   },
   "projects": [
     {
       "project": "dotfiles",
-      "events": 489,
-      "sessions": 7,
-      "writes": 217,
-      "failures": 257,
+      "events": 676,
+      "sessions": 10,
+      "writes": 329,
+      "failures": 327,
       "tradeoffs": 2,
       "large_changes": 13,
-      "reversals": 0
+      "reversals": 2
     },
     {
       "project": "pull",
-      "events": 453,
+      "events": 522,
       "sessions": 10,
-      "writes": 185,
-      "failures": 169,
+      "writes": 198,
+      "failures": 212,
       "tradeoffs": 0,
       "large_changes": 0,
       "reversals": 0
     },
     {
       "project": "reviews",
-      "events": 17,
-      "sessions": 2,
-      "writes": 7,
-      "failures": 10,
+      "events": 41,
+      "sessions": 5,
+      "writes": 13,
+      "failures": 28,
       "tradeoffs": 0,
       "large_changes": 0,
       "reversals": 0
     },
     {
       "project": "unknown",
-      "events": 9,
-      "sessions": 3,
+      "events": 20,
+      "sessions": 4,
       "writes": 1,
       "failures": 1,
       "tradeoffs": 0,
@@ -66,17 +66,19 @@
     }
   ],
   "events_by_type": {
-    "tool_failure": 437,
-    "tool_write": 410,
-    "test_run": 100,
+    "tool_failure": 568,
+    "tool_write": 541,
+    "test_run": 116,
+    "task_completed": 16,
     "large_change": 13,
-    "task_completed": 6,
-    "decision_tradeoff": 2
+    "decision_tradeoff": 2,
+    "reversal": 2,
+    "cue_fired": 1
   },
   "top_friction_domains": [
     {
       "domain": "state",
-      "count": 382
+      "count": 511
     },
     {
       "domain": "unknown",
@@ -91,6 +93,10 @@
       "count": 2
     },
     {
+      "domain": "permission",
+      "count": 2
+    },
+    {
       "domain": "syntax",
       "count": 1
     },
@@ -102,26 +108,26 @@
   "top_friction_subdomains": [
     {
       "subdomain": "state:file-not-found",
-      "count": 176
+      "count": 232
     },
     {
       "subdomain": "state:resource-limit",
-      "count": 164
+      "count": 226
     },
     {
       "subdomain": "state:command-failed",
-      "count": 31
+      "count": 41
     },
     {
       "subdomain": "state:type-mismatch",
       "count": 8
     },
     {
-      "subdomain": "dependency:ruby-bundler",
-      "count": 3
+      "subdomain": "state:command-file-missing",
+      "count": 4
     },
     {
-      "subdomain": "state:command-file-missing",
+      "subdomain": "dependency:ruby-bundler",
       "count": 3
     },
     {
@@ -134,6 +140,10 @@
     },
     {
       "subdomain": "network:timeout",
+      "count": 1
+    },
+    {
+      "subdomain": "permission:auth",
       "count": 1
     }
   ],
@@ -166,19 +176,20 @@
   "top_skills_used": [
     {
       "skill": "application development",
-      "count": 400
+      "count": 523
     },
     {
       "skill": "domain modeling",
-      "count": 6
+      "count": 12
     },
     {
       "skill": "developer tooling",
-      "count": 4
+      "count": 6
     }
   ],
   "top_files_modified": [
     "/Users/meagan.waller/.claude/hooks/Stop/leverage-evaluator.sh",
+    "/Users/meagan.waller/.claude/plans/delightful-shimmying-cookie.md",
     "/Users/meagan.waller/.claude/plans/luminous-wondering-steele.md",
     "/Users/meagan.waller/.claude/plans/mighty-roaming-wreath.md",
     "/Users/meagan.waller/.claude/plans/scalable-dazzling-minsky.md",
@@ -193,10 +204,25 @@
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/README.md",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/bin/link-dotfiles",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/bin/tradeoff-gate",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/README.md",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/docs/telemetry-architecture.md",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/docs/workflow-scenarios.md",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/README.md",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PostToolUse/async-test-runner.sh"
-  ]
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/governance/README.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/governance/bin/governance.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/governance/bin/provenance-scan.py",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/governance/bin/provenance-verify.sh"
+  ],
+  "cue_engagement": {
+    "total_fires": 1,
+    "unique_cues_fired": 1,
+    "by_cue": [
+      {
+        "cue": "commit",
+        "count": 1
+      }
+    ],
+    "by_trigger": [
+      {
+        "trigger": "prompt",
+        "count": 1
+      }
+    ]
+  }
 }

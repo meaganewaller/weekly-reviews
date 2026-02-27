@@ -1,5 +1,5 @@
 ---
-layout: home
+layout: page
 title: About
 permalink: /about/
 ---
@@ -8,77 +8,51 @@ permalink: /about/
 
 This site publishes automated weekly engineering reviews generated from my development activity across all projects.
 
-## How It Works
+## What This Is
 
-These reviews are powered by **Dev OS**, a personal telemetry system built on top of [Claude Code](https://claude.ai/claude-code). The system observes engineering patterns in real-time and surfaces insights at the end of each week.
+These reviews are powered by **Dev OS**, a personal telemetry system built on top of [Claude Code](https://claude.ai/claude-code). The system:
 
-### The Data Pipeline
+- **Observes** engineering patterns in real-time via hooks
+- **Classifies** errors into a friction taxonomy for pattern detection
+- **Documents** architectural decisions and tradeoffs
+- **Synthesizes** staff-level insights at week's end
 
-```
-Claude Code Sessions
-        │
-        ▼
-┌───────────────────┐
-│  Event Hooks      │
-│  ────────────     │
-│  • Impact writes  │
-│  • Friction logs  │
-│  • Test results   │
-│  • Decisions      │
-└───────────────────┘
-        │
-        ▼
-~/.claude/dev-os-events.jsonl
-        │
-        ▼
-┌───────────────────┐
-│  /weekly-review   │
-│  ────────────     │
-│  • Aggregates     │
-│  • Analyzes       │
-│  • Synthesizes    │
-└───────────────────┘
-        │
-        ▼
-    This Site
-```
+## The Pipeline
 
-### What Gets Tracked
+{% mermaid %}
+flowchart LR
+    A[Daily Work] --> B[Event Capture]
+    B --> C[Weekly Review]
+    C --> D[This Site]
+{% endmermaid %}
 
-| Event Type | Description |
-|------------|-------------|
-| `tool_write` | Files created or edited, with risk assessment |
-| `tool_failure` | Errors classified into friction domains |
-| `large_change` | Diffs exceeding 250 lines |
-| `reversal` | When recent work gets undone |
-| `decision_tradeoff` | Architectural decisions with documented tradeoffs |
-| `test_run` | Test execution results |
+Every Claude Code tool use triggers hooks that log structured events. At week's end, these events are aggregated, visualized, and synthesized into actionable insights.
 
-### Friction Taxonomy
+**Learn more:** [How It Works](/how-it-works/)
 
-Tool failures are classified into domains to identify skill gaps:
+## Documentation
 
-- **syntax** - Parse errors, malformed input
-- **type** - Type mismatches, inference failures
-- **dependency** - Missing packages, version conflicts
-- **permission** - Access denied, auth failures
-- **state** - File not found, resource limits
-- **config** - Env vars, misconfiguration
-- **testing** - Test failures, assertions
-- **build** - Compilation, bundling errors
+| Page | Description |
+|------|-------------|
+| [How It Works](/how-it-works/) | System overview and architecture |
+| [Data Capture](/data-capture/) | How hooks observe and log activity |
+| [Friction Taxonomy](/friction-taxonomy/) | Error classification hierarchy |
+| [Review Pipeline](/review-pipeline/) | How raw data becomes insights |
+| [Hooks & Cues](/hooks-and-cues/) | Event-driven telemetry and guidance |
+| [Event Schema](/event-schema/) | Structure of captured events |
 
-## The Review Process
+## Why This Exists
 
-Each week, the `/weekly-review` skill:
+Engineering work is often invisible. Features ship, bugs get fixed, but the patterns of how work gets done—the friction encountered, the decisions made, the reversals and recoveries—fade from memory.
 
-1. **Aggregates** all events from the past 7 days across every project
-2. **Generates** charts and metrics (commits, friction patterns, test stability)
-3. **Synthesizes** staff-level analysis including:
-   - Executive summary with wins and concerns
-   - Friction analysis with practice recommendations
-   - Architecture and principles assessment
-   - Promotion-ready impact bullets
-   - Precision moves for the next week
+This system creates a persistent record that surfaces:
+
+- **Where time goes** - Which projects, what types of work
+- **Where friction lives** - Recurring errors and skill gaps
+- **What principles guide decisions** - Architectural patterns invoked
+- **How skills evolve** - Week-over-week trends
+
+It's a feedback loop for deliberate practice.
 
 ## Source
 
@@ -86,19 +60,3 @@ The Dev OS configuration lives in my dotfiles:
 
 - **Repository**: [github.com/meaganewaller/.dotfiles](https://github.com/meaganewaller/.dotfiles)
 - **Path**: `home/.claude/`
-
-Key components:
-- `hooks/` - Event handlers that capture telemetry
-- `skills/common/weekly-review/` - The review generation skill
-- `settings/` - Profile-aware Claude Code configuration
-
-## Why This Exists
-
-Engineering work is often invisible. Features ship, bugs get fixed, but the patterns of how work gets done—the friction encountered, the decisions made, the reversals and recoveries—fade from memory.
-
-This system creates a persistent record that surfaces:
-- Where I'm spending time (and where I'm stuck)
-- What architectural principles guide my decisions
-- How my skills are evolving week over week
-
-It's a feedback loop for deliberate practice.

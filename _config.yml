@@ -24,11 +24,16 @@ description: Automated weekly engineering reviews generated from development act
 rss-description: true
 
 navbar-links:
-  About this site: "about"
-  Resources:
-    - Claude Code Configuration: "https://github.com/meaganewaller/.dotfiles/blob/main/home/.claude"
-    - Workflow Scenarios: "https://github.com/meaganewaller/.dotfiles/blob/main/home/.claude/docs/workflow-scenarios.md"
-    - Telemetry Architecture: "https://github.com/meaganewaller/.dotfiles/blob/main/home/.claude/docs/telemetry-architecture.md"
+  About: "about"
+  How It Works: "how-it-works"
+  Documentation:
+    - Data Capture: "data-capture"
+    - Friction Taxonomy: "friction-taxonomy"
+    - Review Pipeline: "review-pipeline"
+    - Hooks & Cues: "hooks-and-cues"
+    - Event Schema: "event-schema"
+  Source:
+    - Dotfiles Repository: "https://github.com/meaganewaller/.dotfiles/blob/main/home/.claude"
   
 avatar: "/assets/img/avatar-icon.jpg"
 round-avatar: true
@@ -64,19 +69,13 @@ kramdown:
     ndash: "--"
     mdash: "---"
 
-# Default YAML values (more information on Jekyll's site)
-defaults:
-  -
-    scope:
-      path: ""
-      type: "posts"
-    values:
-      layout: "review"
-  -
-    scope:
-      path: "" # any file that's not a post will be a "page" layout by default
-    values:
-      layout: "page"
+mermaid:
+  src: '/assets/js/mermaid.js'
+
+collections:
+  reviews:
+    output: true
+
 
 # Exclude these files from production site
 exclude:
@@ -92,3 +91,4 @@ exclude:
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
+  - jekyll-mermaid
