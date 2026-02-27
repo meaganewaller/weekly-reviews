@@ -1,7 +1,6 @@
 ---
 title: "Building Dev OS: Engineering Telemetry for AI-Assisted Development"
 date: 2026-02-27
-status: draft
 tags: [claude-code, developer-tools, telemetry, productivity]
 layout: post
 description: How I built a support system for Claude.
