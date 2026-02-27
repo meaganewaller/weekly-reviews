@@ -3,82 +3,82 @@
   "week": {
     "start": "2026-02-23",
     "end": "2026-03-01",
-    "generated_at": "2026-02-27T03:57:11.373623Z"
+    "generated_at": "2026-02-27T19:07:03.472845Z"
   },
   "totals": {
-    "events": 1259,
-    "sessions": 29,
+    "events": 1697,
+    "sessions": 31,
     "projects_touched": 4,
-    "writes": 541,
-    "failures": 568,
-    "large_changes": 13,
-    "reversals": 2,
-    "decisions_documented": 2,
-    "test_runs": 116,
+    "writes": 721,
+    "failures": 754,
+    "large_changes": 15,
+    "reversals": 11,
+    "decisions_documented": 4,
+    "test_runs": 168,
     "dependency_changes": 0,
-    "files_modified": 208
+    "files_modified": 275
   },
   "derived_metrics": {
-    "failure_rate": 0.4512,
-    "test_stability_rate": 0.431,
-    "test_runs_passed": 50
+    "failure_rate": 0.4443,
+    "test_stability_rate": 0.4702,
+    "test_runs_passed": 79
   },
   "projects": [
     {
       "project": "dotfiles",
-      "events": 676,
+      "events": 800,
       "sessions": 10,
-      "writes": 329,
-      "failures": 327,
+      "writes": 380,
+      "failures": 397,
       "tradeoffs": 2,
       "large_changes": 13,
       "reversals": 2
     },
     {
       "project": "pull",
-      "events": 522,
-      "sessions": 10,
-      "writes": 198,
-      "failures": 212,
+      "events": 712,
+      "sessions": 11,
+      "writes": 250,
+      "failures": 287,
       "tradeoffs": 0,
       "large_changes": 0,
-      "reversals": 0
+      "reversals": 7
     },
     {
       "project": "reviews",
-      "events": 41,
-      "sessions": 5,
-      "writes": 13,
-      "failures": 28,
+      "events": 163,
+      "sessions": 6,
+      "writes": 90,
+      "failures": 69,
       "tradeoffs": 0,
-      "large_changes": 0,
-      "reversals": 0
+      "large_changes": 2,
+      "reversals": 2
     },
     {
       "project": "unknown",
-      "events": 20,
+      "events": 22,
       "sessions": 4,
       "writes": 1,
       "failures": 1,
-      "tradeoffs": 0,
+      "tradeoffs": 2,
       "large_changes": 0,
       "reversals": 0
     }
   ],
   "events_by_type": {
-    "tool_failure": 568,
-    "tool_write": 541,
-    "test_run": 116,
+    "tool_failure": 754,
+    "tool_write": 721,
+    "test_run": 168,
     "task_completed": 16,
-    "large_change": 13,
-    "decision_tradeoff": 2,
-    "reversal": 2,
-    "cue_fired": 1
+    "large_change": 15,
+    "reversal": 11,
+    "cue_fired": 8,
+    "decision_tradeoff": 4
   },
   "top_friction_domains": [
     {
       "domain": "state",
-      "count": 511
+      "count": 697
     },
     {
       "domain": "unknown",
@@ -108,23 +108,23 @@
   "top_friction_subdomains": [
     {
       "subdomain": "state:file-not-found",
-      "count": 232
+      "count": 314
     },
     {
       "subdomain": "state:resource-limit",
-      "count": 226
+      "count": 308
     },
     {
       "subdomain": "state:command-failed",
-      "count": 41
+      "count": 61
     },
     {
       "subdomain": "state:type-mismatch",
-      "count": 8
+      "count": 9
     },
     {
       "subdomain": "state:command-file-missing",
-      "count": 4
+      "count": 5
     },
     {
       "subdomain": "dependency:ruby-bundler",
@@ -171,23 +171,42 @@
     {
       "principle": "documentation as specification",
       "count": 1
+    },
+    {
+      "principle": "Code coverage: Coverage tools need named constructs to track code execution",
+      "count": 1
+    },
+    {
+      "principle": "Test maintainability: Named helpers are more readable and debuggable than inline blocks",
+      "count": 1
+    },
+    {
+      "principle": "Separation of concerns: Test helpers separated into named module (ParallelMapSpecHelpers)",
+      "count": 1
+    },
+    {
+      "principle": "Simplicity: Data verification is simpler and more direct than method call spying",
+      "count": 1
     }
   ],
   "top_skills_used": [
     {
       "skill": "application development",
-      "count": 523
+      "count": 697
     },
     {
       "skill": "domain modeling",
-      "count": 12
+      "count": 13
     },
     {
       "skill": "developer tooling",
-      "count": 6
+      "count": 11
     }
   ],
   "top_files_modified": [
+    "/Users/meagan.waller/.claude/decision-journal/2026-02-27-1400-resource-management-implementation.md",
+    "/Users/meagan.waller/.claude/decision-journal/2026-02-27-1430-principles-macro-design.md",
+    "/Users/meagan.waller/.claude/decision-journal/2026-02-27-1500-project-claude-config.md",
     "/Users/meagan.waller/.claude/hooks/Stop/leverage-evaluator.sh",
     "/Users/meagan.waller/.claude/plans/delightful-shimmying-cookie.md",
     "/Users/meagan.waller/.claude/plans/luminous-wondering-steele.md",
@@ -196,32 +215,49 @@
     "/Users/meagan.waller/.claude/plans/tranquil-bubbling-liskov.md",
     "/Users/meagan.waller/.claude/reviews/week-of-2026-02-23/review.md",
     "/Users/meagan.waller/.claude/settings.json",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/.claude/CLAUDE.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/.claude/cues/dotfiles-dev/cue.md",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.github/workflows/test-dotfiles-setup.yml",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.gitignore",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.mise-tasks/README.md",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.pre-commit-config.yaml",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/ARCHITECTURE.md",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/README.md",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/bin/link-dotfiles",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/bin/tradeoff-gate",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/governance/README.md",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/governance/bin/governance.sh",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/governance/bin/provenance-scan.py",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/governance/bin/provenance-verify.sh"
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/bin/link-dotfiles"
   ],
   "cue_engagement": {
-    "total_fires": 1,
-    "unique_cues_fired": 1,
+    "total_fires": 8,
+    "unique_cues_fired": 5,
     "by_cue": [
       {
         "cue": "commit",
+        "count": 3
+      },
+      {
+        "cue": "migration",
+        "count": 2
+      },
+      {
+        "cue": "dotfiles-dev",
+        "count": 1
+      },
+      {
+        "cue": "principles",
+        "count": 1
+      },
+      {
+        "cue": "env",
         "count": 1
       }
     ],
     "by_trigger": [
       {
+        "trigger": "bash",
+        "count": 5
+      },
+      {
         "trigger": "prompt",
-        "count": 1
+        "count": 3
       }
     ]
   }
