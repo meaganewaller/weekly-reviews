@@ -34,7 +34,6 @@ summary_file: 2026-02-23-summary.json
 | Projects touched | 4 |
 | Sessions | 31 |
 | Total events | 1697 |
-| Files modified | 275 |
 | Writes | 721 |
 | Failures/friction | 754 (44.4300%) |
 | Decisions documented | 4 |
