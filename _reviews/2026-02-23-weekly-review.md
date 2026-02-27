@@ -199,24 +199,6 @@ Given 697 application-development skill events and 308 resource-limit errors, ex
 
 *Recommendation:* Create or enable cues for resource-conscious development and test health. The data shows these are active problem areas without cue support.
 
-## 📁 Files Modified
-
-- `/Users/meagan.waller/.claude/decision-journal/2026-02-27-1400-resource-management-implementation.md`
-- `/Users/meagan.waller/.claude/decision-journal/2026-02-27-1430-principles-macro-design.md`
-- `/Users/meagan.waller/.claude/decision-journal/2026-02-27-1500-project-claude-config.md`
-- `/Users/meagan.waller/.claude/hooks/Stop/leverage-evaluator.sh`
-- `/Users/meagan.waller/.claude/plans/delightful-shimmying-cookie.md`
-- `/Users/meagan.waller/.claude/plans/luminous-wondering-steele.md`
-- `/Users/meagan.waller/.claude/plans/mighty-roaming-wreath.md`
-- `/Users/meagan.waller/.claude/plans/scalable-dazzling-minsky.md`
-- `/Users/meagan.waller/.claude/plans/tranquil-bubbling-liskov.md`
-- `/Users/meagan.waller/.claude/reviews/week-of-2026-02-23/review.md`
-- `/Users/meagan.waller/.claude/settings.json`
-- `/Users/meagan.waller/github/meaganewaller/.dotfiles/.claude/CLAUDE.md`
-- `/Users/meagan.waller/github/meaganewaller/.dotfiles/.claude/cues/dotfiles-dev/cue.md`
-- `/Users/meagan.waller/github/meaganewaller/.dotfiles/.github/workflows/test-dotfiles-setup.yml`
-- `/Users/meagan.waller/github/meaganewaller/.dotfiles/.gitignore`
-
 ## 📈 Charts
 ![Events by Type](/assets/charts/2026-02-23/events_by_type.png)
 ![Friction Domains](/assets/charts/2026-02-23/friction_domains.png)
