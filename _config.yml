@@ -22,6 +22,8 @@ title: Weekly Engineering Reviews
 author: Meagan Waller
 description: Automated weekly engineering reviews generated from development activity
 rss-description: true
+url: "https://weekly-reviews.onrender.com"
+github_username: "meaganealler"
 
 navbar-links:
   About: "about"
@@ -65,6 +67,8 @@ paginate: 5
 kramdown:
   input: GFM
   smart_quotes: lsquo,rsquo,ldquo,rdquo
+  header_links: true
+  auto_id_stripping: true
   typographic_symbols:
     ndash: "--"
     mdash: "---"
@@ -75,7 +79,9 @@ mermaid:
 collections:
   reviews:
     output: true
-
+  glossary:
+    output: true
+    permalink: /glossary/:name/
 
 # Exclude these files from production site
 exclude:
@@ -92,3 +98,9 @@ plugins:
   - jekyll-paginate
   - jekyll-sitemap
   - jekyll-mermaid
+  - jekyll-titles-from-headings
+
+titles_from_headings:
+  enabled: true
+  strip_title: true
+  collections: true

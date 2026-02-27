@@ -1,7 +1,8 @@
 {% assign review = include.review %}
-<a class="underline decoration-2 underline-offset-2 text-xl text-stone-600 dark:text-stone-200" 
-    href="{{ review.url | prepend: site.baseurl }}">{{ review.title }}</a>
-    <time class="text-md pl-1 text-stone-500 italic" datetime="{{ review.date | date: '%Y-%m-%d' }}">
-  <a href="{{ review.url | prepend: site.baseurl }}">{{ review.date | date: "%B %-d, %Y" }}</a>
-</time> 
-<div class="text-lg text-stone-500 dark:text-stone-200">{{ review.description | default: review.excerpt }}</div>
+<div class="flex flex-col gap-2">
+  <a class="underline decoration-2 underline-offset-2 text-xl text-stone-600 dark:text-stone-200" 
+      href="{{ review.url | prepend: site.baseurl }}">
+      {{ review.title }}
+  </a>
+  <div class="text-lg text-stone-500 dark:text-stone-200">{{ review.description | default: review.excerpt }}</div>
+</div>
