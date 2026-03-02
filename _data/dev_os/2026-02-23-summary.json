@@ -3,46 +3,46 @@
   "week": {
     "start": "2026-02-23",
     "end": "2026-03-01",
-    "generated_at": "2026-02-27T19:07:03.472845Z"
+    "generated_at": "2026-02-27T21:13:33.148571Z"
   },
   "totals": {
-    "events": 1697,
-    "sessions": 31,
+    "events": 1932,
+    "sessions": 29,
     "projects_touched": 4,
-    "writes": 721,
-    "failures": 754,
-    "large_changes": 15,
+    "writes": 816,
+    "failures": 848,
+    "large_changes": 12,
     "reversals": 11,
-    "decisions_documented": 4,
-    "test_runs": 168,
+    "decisions_documented": 10,
+    "test_runs": 219,
     "dependency_changes": 0,
-    "files_modified": 275
+    "files_modified": 291
   },
   "derived_metrics": {
-    "failure_rate": 0.4443,
-    "test_stability_rate": 0.4702,
-    "test_runs_passed": 79
+    "failure_rate": 0.4389,
+    "test_stability_rate": 0.5525,
+    "test_runs_passed": 121
   },
   "projects": [
     {
-      "project": "dotfiles",
-      "events": 800,
-      "sessions": 10,
-      "writes": 380,
-      "failures": 397,
-      "tradeoffs": 2,
-      "large_changes": 13,
-      "reversals": 2
-    },
-    {
       "project": "pull",
-      "events": 712,
+      "events": 893,
       "sessions": 11,
-      "writes": 250,
-      "failures": 287,
+      "writes": 302,
+      "failures": 362,
       "tradeoffs": 0,
       "large_changes": 0,
       "reversals": 7
+    },
+    {
+      "project": "dotfiles",
+      "events": 868,
+      "sessions": 10,
+      "writes": 424,
+      "failures": 417,
+      "tradeoffs": 2,
+      "large_changes": 11,
+      "reversals": 2
     },
     {
       "project": "reviews",
@@ -51,34 +51,33 @@
       "writes": 90,
       "failures": 69,
       "tradeoffs": 0,
-      "large_changes": 2,
+      "large_changes": 1,
       "reversals": 2
     },
     {
       "project": "unknown",
-      "events": 22,
-      "sessions": 4,
-      "writes": 1,
-      "failures": 1,
-      "tradeoffs": 2,
+      "events": 8,
+      "sessions": 2,
+      "writes": 0,
+      "failures": 0,
+      "tradeoffs": 8,
       "large_changes": 0,
       "reversals": 0
     }
   ],
   "events_by_type": {
-    "tool_failure": 754,
-    "tool_write": 721,
-    "test_run": 168,
-    "task_completed": 16,
+    "tool_failure": 848,
+    "tool_write": 816,
+    "test_run": 219,
     "large_change": 15,
+    "cue_fired": 13,
     "reversal": 11,
-    "cue_fired": 8,
-    "decision_tradeoff": 4
+    "decision_tradeoff": 10
   },
   "top_friction_domains": [
     {
       "domain": "state",
-      "count": 697
+      "count": 790
     },
     {
       "domain": "unknown",
@@ -89,16 +88,16 @@
       "count": 3
     },
     {
+      "domain": "syntax",
+      "count": 2
+    },
+    {
       "domain": "type",
       "count": 2
     },
     {
       "domain": "permission",
       "count": 2
-    },
-    {
-      "domain": "syntax",
-      "count": 1
     },
     {
       "domain": "network",
@@ -108,15 +107,15 @@
   "top_friction_subdomains": [
     {
       "subdomain": "state:file-not-found",
-      "count": 314
+      "count": 354
     },
     {
       "subdomain": "state:resource-limit",
-      "count": 308
+      "count": 351
     },
     {
       "subdomain": "state:command-failed",
-      "count": 61
+      "count": 71
     },
     {
       "subdomain": "state:type-mismatch",
@@ -131,12 +130,12 @@
       "count": 3
     },
     {
-      "subdomain": "type:ruby-sorbet",
+      "subdomain": "syntax:parse",
       "count": 2
     },
     {
-      "subdomain": "syntax:parse",
-      "count": 1
+      "subdomain": "type:ruby-sorbet",
+      "count": 2
     },
     {
       "subdomain": "network:timeout",
@@ -148,6 +147,30 @@
     }
   ],
   "top_principles_invoked": [
+    {
+      "principle": "Role separation (AI excels at consistency, not judgment)",
+      "count": 1
+    },
+    {
+      "principle": "Context provision responsibility (human's role is context provision)",
+      "count": 1
+    },
+    {
+      "principle": "Measurement-driven design (telemetry reveals actual needs)",
+      "count": 1
+    },
+    {
+      "principle": "Feedback and enforcement (trains both parties)",
+      "count": 1
+    },
+    {
+      "principle": "Continuous improvement (system is never done)",
+      "count": 1
+    },
+    {
+      "principle": "Guardrails over autonomy (explicit 'What This Isn't' constraints)",
+      "count": 1
+    },
     {
       "principle": "self-contained artifacts",
       "count": 1
@@ -163,44 +186,20 @@
     {
       "principle": "skills should be self-contained",
       "count": 1
-    },
-    {
-      "principle": "explicit over implicit",
-      "count": 1
-    },
-    {
-      "principle": "documentation as specification",
-      "count": 1
-    },
-    {
-      "principle": "Code coverage: Coverage tools need named constructs to track code execution",
-      "count": 1
-    },
-    {
-      "principle": "Test maintainability: Named helpers are more readable and debuggable than inline blocks",
-      "count": 1
-    },
-    {
-      "principle": "Separation of concerns: Test helpers separated into named module (ParallelMapSpecHelpers)",
-      "count": 1
-    },
-    {
-      "principle": "Simplicity: Data verification is simpler and more direct than method call spying",
-      "count": 1
     }
   ],
   "top_skills_used": [
     {
       "skill": "application development",
-      "count": 697
+      "count": 776
+    },
+    {
+      "skill": "developer tooling",
+      "count": 27
     },
     {
       "skill": "domain modeling",
       "count": 13
-    },
-    {
-      "skill": "developer tooling",
-      "count": 11
     }
   ],
   "top_files_modified": [
@@ -215,45 +214,53 @@
     "/Users/meagan.waller/.claude/plans/tranquil-bubbling-liskov.md",
     "/Users/meagan.waller/.claude/reviews/week-of-2026-02-23/review.md",
     "/Users/meagan.waller/.claude/settings.json",
+    "/Users/meagan.waller/.claude/skills/weekly-review/scripts/aggregate.sh",
+    "/Users/meagan.waller/.claude/skills/weekly-review/scripts/publish_to_jekyll.sh",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.claude/CLAUDE.md",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.claude/cues/dotfiles-dev/cue.md",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.github/workflows/test-dotfiles-setup.yml",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.gitignore",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.mise-tasks/README.md",
     "/Users/meagan.waller/github/meaganewaller/.dotfiles/.pre-commit-config.yaml",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/ARCHITECTURE.md",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/README.md",
-    "/Users/meagan.waller/github/meaganewaller/.dotfiles/bin/link-dotfiles"
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/ARCHITECTURE.md"
   ],
   "cue_engagement": {
-    "total_fires": 8,
-    "unique_cues_fired": 5,
+    "total_fires": 13,
+    "unique_cues_fired": 7,
     "by_cue": [
-      {
-        "cue": "commit",
-        "count": 3
-      },
       {
         "cue": "migration",
         "count": 2
       },
       {
-        "cue": "dotfiles-dev",
-        "count": 1
+        "cue": "commit",
+        "count": 2
       },
       {
         "cue": "principles",
-        "count": 1
+        "count": 2
       },
       {
         "cue": "env",
+        "count": 2
+      },
+      {
+        "cue": "large-files",
+        "count": 2
+      },
+      {
+        "cue": "adr",
+        "count": 2
+      },
+      {
+        "cue": "dotfiles-dev",
         "count": 1
       }
     ],
     "by_trigger": [
       {
         "trigger": "bash",
-        "count": 5
+        "count": 10
       },
       {
         "trigger": "prompt",
