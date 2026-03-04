@@ -253,6 +253,119 @@ Emitted when a cue is injected.
 | `has_macro` | boolean | Whether macro was executed |
 | `query` | string | Text that triggered the cue |
 
+### session_duration
+
+Emitted periodically to track session length and archetype.
+
+```json
+{
+  "event_type": "session_duration",
+  "payload": {
+    "duration_minutes": 145,
+    "archetype": "marathon",
+    "has_task_list": true
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `duration_minutes` | number | Minutes since session start |
+| `archetype` | string | `sprint` (<30m), `flow` (30-120m), or `marathon` (>120m) |
+| `has_task_list` | boolean | Whether task list is active |
+
+See [Session Archetype](/glossary/session-archetype/) for archetype definitions.
+
+### session_health
+
+Emitted at compaction to capture session quality metrics.
+
+```json
+{
+  "event_type": "session_health",
+  "payload": {
+    "duration_minutes": 145,
+    "archetype": "marathon",
+    "trigger": "pre_compact"
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `duration_minutes` | number | Session duration at snapshot |
+| `archetype` | string | Session archetype |
+| `trigger` | string | What triggered the snapshot (`pre_compact`) |
+
+See [Session Health](/glossary/session-health/) for the composite health metric.
+
+### principle_activated
+
+Emitted when a principle is first invoked in a session.
+
+```json
+{
+  "event_type": "principle_activated",
+  "payload": {
+    "principle": "model-first",
+    "context": "",
+    "activation": "first_invocation"
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `principle` | string | Principle identifier |
+| `context` | string | Optional surrounding context |
+| `activation` | string | Always `first_invocation` |
+
+### principle_reinforced
+
+Emitted when an active principle is re-surfaced before a tool operation.
+
+```json
+{
+  "event_type": "principle_reinforced",
+  "payload": {
+    "file_path": "/app/models/user.rb",
+    "tool": "Write",
+    "principles_reinforced": ["model-first"],
+    "reinforcement_count": 1
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `file_path` | string | File being written/edited |
+| `tool` | string | Tool being used (`Write` or `Edit`) |
+| `principles_reinforced` | string[] | Principles re-surfaced |
+| `reinforcement_count` | number | Total reinforcements this session |
+
+See [Principle Activation](/glossary/principle-activation/) for the activation lifecycle.
+
+### domain_modeling
+
+Emitted when prompts indicate upfront design work.
+
+```json
+{
+  "event_type": "domain_modeling",
+  "payload": {
+    "prompt_snippet": "what entities do we need for...",
+    "trigger": "prompt_pattern"
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `prompt_snippet` | string | First 100 chars of prompt |
+| `trigger` | string | How it was detected (`prompt_pattern`) |
+
+See [Domain Modeling](/glossary/domain-modeling/) for correlation with reversals.
+
 ## Supporting Log Files
 
 ### impact-log.jsonl

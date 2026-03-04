@@ -24,10 +24,11 @@ Hooks are shell scripts that run in response to Claude Code events.
 | Event | When | Common Uses |
 |-------|------|-------------|
 | `SessionStart` | Session begins/resumes | Context injection, marker clearing |
-| `UserPromptSubmit` | User sends prompt | Cue matching |
-| `PreToolUse` | Before tool executes | Validation, cue injection |
-| `PostToolUse` | After tool succeeds | Impact logging, pattern detection |
+| `UserPromptSubmit` | User sends prompt | Cue matching, duration monitoring |
+| `PreToolUse` | Before tool executes | Validation, cue injection, principle reinforcement |
+| `PostToolUse` | After tool succeeds | Impact logging, pattern detection, principle activation |
 | `PostToolUseFailure` | After tool fails | Friction classification |
+| `PreCompact` | Before context compaction | Session health capture |
 | `Stop` | Session ending | Enforcement gates |
 
 ### Example: Impact Extractor
@@ -46,6 +47,42 @@ if [[ -n "$FILE_PATH" ]]; then
 fi
 ```
 
+### Session & Principle Hooks
+
+These hooks implement [ADR-0006](https://github.com/meaganewaller/.dotfiles/blob/main/home/.claude/docs/architecture/0006-skill-vs-cue-design.md) session duration correlation:
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| `session-duration-monitor` | UserPromptSubmit | Track duration, classify archetype, provide guidance |
+| `principle-activator` | PostToolUse | Detect principle mentions, mark as "active" |
+| `principle-reinforcer` | PreToolUse | Re-surface active principles before Write/Edit |
+| `pre-compact-snapshot` | PreCompact | Capture session health metrics |
+
+#### Session Duration Monitor
+
+```bash
+# Classifies session into archetypes
+if (( DURATION_MINUTES >= 120 )); then
+  ARCHETYPE="marathon"
+  # Suggests break/commit checkpoint
+elif (( DURATION_MINUTES >= 30 )); then
+  ARCHETYPE="flow"
+  # Suggests task list
+fi
+```
+
+#### Principle Activation Flow
+
+```
+1. PostToolUse: Output mentions "model-first"
+   → principle-activator marks "model-first" as active
+
+2. PreToolUse (Write): Editing models/user.rb
+   → principle-reinforcer checks active principles
+   → "model-first" is relevant to models/
+   → Injects reminder: "Did you sketch the shape?"
+```
+
 ### Hook Output
 
 Different events expect different output formats:
@@ -53,8 +90,31 @@ Different events expect different output formats:
 | Event | Output Format | Effect |
 |-------|---------------|--------|
 | PreToolUse | `{"permissionDecision": "allow"}` | Allow/block tool |
+| PreToolUse | `{"ok": false, "error": "..."}` | Block with error |
 | PostToolUse | `{"hookSpecificOutput": {"context": "..."}}` | Inject into context |
 | Stop | `{"ok": false, "reason": "..."}` | Block session end |
+
+### Blocking vs Warning
+
+Hooks can either **warn** (inject context) or **block** (prevent action):
+
+```bash
+# Warning - inject guidance but allow action
+jq -n '{hookSpecificOutput: {additionalContext: "Consider X before proceeding"}}'
+
+# Blocking - prevent action entirely
+jq -n '{ok: false, error: "Action blocked because Y"}'
+```
+
+**When to block:**
+- Action will definitely fail (e.g., reading oversized file)
+- Action violates hard constraints (e.g., force-push to main)
+
+**When to warn:**
+- Guidance is helpful but action may be valid
+- User should make final decision
+
+Example: The `large-file-guard` **blocks** session log reads (they always fail) but **warns** about other large files.
 
 ## Cues: Context-Aware Guidance
 

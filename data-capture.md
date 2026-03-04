@@ -15,20 +15,31 @@ Claude Code supports hooks—shell scripts that run in response to events. Dev O
 {% mermaid %}
 flowchart TB
     subgraph session["Claude Code Session"]
+        subgraph start["SessionStart"]
+            P6[friction escalator]
+            P7[context injector]
+        end
+        subgraph prompt["UserPromptSubmit"]
+            P10[cue-injector-prompt]
+            P11[session-duration-monitor]
+            P12[idea-classifier]
+        end
         subgraph pre["PreToolUse"]
             P1[cue inject]
+            P13[principle-reinforcer]
+            P14[large-file-guard]
         end
         subgraph post["PostToolUse"]
             P2[impact extractor]
             P3[large-diff]
             P4[reversal]
+            P15[principle-activator]
         end
         subgraph fail["PostToolUseFailure"]
             P5[skill-gap detector]
         end
-        subgraph start["SessionStart"]
-            P6[friction escalator]
-            P7[context injector]
+        subgraph compact["PreCompact"]
+            P16[pre-compact-snapshot]
         end
         subgraph stop["Stop"]
             P8[test blocker]
@@ -69,7 +80,27 @@ Add context to the session.
 |------|---------|-----------------|
 | `session-context-injector.sh` | SessionStart | Recent impact/friction |
 | `friction-escalator.sh` | SessionStart | Repeated error warnings |
-| `cue-injector-*.sh` | PreToolUse | Matching cue guidance |
+| `cue-injector-*.sh` | PreToolUse, UserPromptSubmit | Matching cue guidance |
+| `principle-reinforcer.sh` | PreToolUse | Active principles before writes |
+
+### Session & Principle Hooks
+
+Track session health and principle application.
+
+| Hook | Trigger | What it captures |
+|------|---------|------------------|
+| `session-duration-monitor.sh` | UserPromptSubmit | Duration, archetype, guidance |
+| `pre-compact-snapshot.sh` | PreCompact | Session health metrics |
+| `principle-activator.sh` | PostToolUse | First principle invocations |
+| `idea-classifier.sh` | UserPromptSubmit | Domain modeling prompts |
+
+### Guard Hooks
+
+Block or warn about risky operations.
+
+| Hook | Trigger | What it guards |
+|------|---------|----------------|
+| `large-file-guard.sh` | PreToolUse | Session logs (blocks), large files (warns) |
 
 ## Event Creation Flow
 
@@ -184,6 +215,72 @@ flowchart TD
 }
 ```
 
+## Session Duration Tracking
+
+Sessions are monitored for duration and classified into archetypes:
+
+{% mermaid %}
+flowchart TD
+    A[User submits prompt] --> B[session-duration-monitor.sh]
+    B --> C{Duration?}
+    C -->|<30 min| D[Sprint archetype]
+    C -->|30-120 min| E[Flow archetype]
+    C -->|>120 min| F[Marathon archetype]
+    D & E & F --> G[session_duration event]
+    F --> H[Suggest break/commit]
+{% endmermaid %}
+
+**Example event:**
+```json
+{
+  "event_type": "session_duration",
+  "payload": {
+    "duration_minutes": 145,
+    "archetype": "marathon",
+    "has_task_list": true
+  }
+}
+```
+
+## Principle Activation
+
+Principles are tracked through activation (first mention) and reinforcement (re-surfacing):
+
+{% mermaid %}
+flowchart TD
+    A[Output mentions 'model-first'] --> B[principle-activator.sh]
+    B --> C[Mark principle active]
+    C --> D[principle_activated event]
+    E[Later: Write to models/] --> F[principle-reinforcer.sh]
+    F --> G{Active principle relevant?}
+    G -->|Yes| H[Inject reminder]
+    H --> I[principle_reinforced event]
+{% endmermaid %}
+
+**Example activation:**
+```json
+{
+  "event_type": "principle_activated",
+  "payload": {
+    "principle": "model-first",
+    "activation": "first_invocation"
+  }
+}
+```
+
+## Domain Modeling Detection
+
+Prompts indicating upfront design work are tracked:
+
+{% mermaid %}
+flowchart TD
+    A[User asks 'what entities do we need?'] --> B[idea-classifier.sh]
+    B --> C[Pattern match: domain modeling]
+    C --> D[domain_modeling event]
+{% endmermaid %}
+
+Tracked to correlate modeling frequency with reversal rates.
+
 ## Session Lifecycle
 
 ### Session Start
@@ -192,8 +289,21 @@ flowchart TD
 flowchart TD
     A[Claude starts] --> B[session-context-injector.sh]
     A --> C[friction-escalator.sh]
-    B --> D[Inject recent impact/friction]
-    C --> E[Warn if repeated errors]
+    A --> D[Clear cue markers]
+    B --> E[Inject recent impact/friction]
+    C --> F[Warn if repeated errors]
+{% endmermaid %}
+
+### On Each Prompt
+
+{% mermaid %}
+flowchart TD
+    A[User submits prompt] --> B[cue-injector-prompt.sh]
+    A --> C[session-duration-monitor.sh]
+    A --> D[idea-classifier.sh]
+    B --> E[Inject matching cues]
+    C --> F[Track duration/archetype]
+    D --> G[Detect domain modeling]
 {% endmermaid %}
 
 ### During Work
@@ -203,9 +313,20 @@ flowchart LR
     A[Edit file] --> B[impact-extractor.sh]
     A --> C[large-diff-escalator.sh]
     A --> D[reversal-detector.sh]
-    B --> E[Log impact]
-    C --> F[Flag if large]
-    D --> G[Detect undos]
+    A --> E[principle-activator.sh]
+    B --> F[Log impact]
+    C --> G[Flag if large]
+    D --> H[Detect undos]
+    E --> I[Track principles]
+{% endmermaid %}
+
+### Before Compaction
+
+{% mermaid %}
+flowchart TD
+    A[Context pressure] --> B[pre-compact-snapshot.sh]
+    B --> C[Capture session health]
+    C --> D[session_health event]
 {% endmermaid %}
 
 ### Session End
@@ -248,6 +369,11 @@ flowchart TB
 | Run tests | test_run | Test stability |
 | Complete task | task_completed | Tasks count |
 | Explain tradeoff | decision_tradeoff | Principles invoked |
+| Work for 30+ minutes | session_duration | Archetype distribution |
+| Hit context limit | session_health | Session health score |
+| Mention a principle | principle_activated | Principles invoked |
+| Write after principle | principle_reinforced | Reinforcement depth |
+| Ask about entities | domain_modeling | Modeling ratio |
 
 ---
 

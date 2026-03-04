@@ -93,6 +93,13 @@ Everything that happens during a coding session becomes an event:
 - **reversal** - Recent work was undone
 - **decision_tradeoff** - Architectural decision documented
 - **test_run** - Tests executed
+- **session_duration** - Session length and archetype tracking
+- **session_health** - Composite quality metrics at compaction
+- **principle_activated** - First invocation of a principle
+- **principle_reinforced** - Active principle re-surfaced before write
+- **domain_modeling** - Upfront design work detected
+
+See [Event Schema](/event-schema/) for complete payload documentation.
 
 ### Friction
 
@@ -105,6 +112,27 @@ Tool failures are classified into domains to identify patterns:
 - **permission** - Access denied
 
 See [Friction Taxonomy](/friction-taxonomy/) for the complete hierarchy.
+
+### Session Archetypes
+
+Sessions are classified by duration to provide appropriate guidance:
+
+| Archetype | Duration | Friction Risk |
+|-----------|----------|---------------|
+| **Sprint** | <30 min | Low |
+| **Flow** | 30-120 min | Medium |
+| **Marathon** | >120 min | High |
+
+Longer sessions correlate with more reversals and compaction pressure. See [Session Archetype](/glossary/session-archetype/) for details.
+
+### Principles
+
+Architectural principles are tracked through two phases:
+
+1. **Activation** - First mention of a principle (e.g., "model-first")
+2. **Reinforcement** - Re-surfacing before relevant write operations
+
+This helps distinguish between principles that are merely mentioned vs. those that guide decisions through ambiguity. See [Principle Activation](/glossary/principle-activation/).
 
 ### Hooks
 
