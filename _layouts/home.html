@@ -2,38 +2,46 @@
 layout: default
 ---
 
-<div class="prose prose-xl font-normal dark:prose-invert">
+{% assign sorted_reviews = site.reviews | sort "date" | reverse %}
+{% assign sorted_posts = site.posts | sort "date" | reverse %}
+<div class="prose prose-xl font-normal dark:prose-invert mb-8">
   {{content}}
 </div>
 
-<h2 class="mt-12 pb-4 text-center text-xl font-bold text-stone-500 dark:text-stone-300">
-  Here's my most recent reviews
+<div class="bg-purple-100 p-4 rounded-lg border border-purple-500/20 mb-8 dark:bg-purple-900 dark:border-purple-500/20">
+<h2 class="pb-4 text-center text-xl font-bold text-purple-500 dark:text-purple-300">
+  recent weekly engineering reviews
 </h2>
 <ul>
-  {% for review in site.reviews limit:3 %}
+  {% for review in sorted_reviews limit:3 %}
   <li class="text-base list-inside pb-8">
     {% include review_link.html review=review %}
   </li>
   {% endfor %}
 </ul>
+</div>
 
-<h2 class="mt-6 pb-4 text-center text-xl font-bold text-stone-500 dark:text-stone-300">
-  Here's my most recent posts
+<div class="bg-orange-100 p-4 rounded-lg border border-orange-500/20 mb-8 dark:bg-orange-900 dark:border-orange-500/20">
+<h2 class="pb-4 text-center text-xl font-bold text-orange-500 dark:text-orange-300">
+  recent posts
 </h2>
 <ul>
-  {% for post in site.posts limit:3 %}
+  {% for post in sorted_posts limit:3 %}
   <li class="text-base list-inside pb-8">
     {% include post_link.html post=post %}
   </li>
   {% endfor %}
-  <li class="hidden only:block italic py-4 text-lg text-neutral-400 dark:text-neutral-50">
+  <li class="hidden only:block italic py-4 text-lg text-orange-400 dark:text-orange-50">
     No Posts yet
   </li>
 </ul>
+</div>
 
-<p class="font-normal text-lg text-center pb-4 text-stone-500 dark:text-stone-300">
+
+
+<p class="font-normal text-lg text-center pb-4 text-sky-500 dark:text-sky-300">
   You can also <a href="/feed.xml"
-    class="underline decoration-2 underline-offset-2 text-stone-500 dark:text-stone-200">subscribe with RSS!</a>
+    class="underline decoration-2 decoration-wavy underline-offset-2 text-stone-500 dark:text-stone-200">subscribe with RSS!</a>
 </p>
 
 {% include site_tags.html %}

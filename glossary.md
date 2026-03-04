@@ -10,7 +10,7 @@ Canonical definitions of terms used throughout this site.
 {% assign categories = sorted_glossary | map: "category" | uniq | sort %}
 
 <div class="flex flex-wrap gap-2 mb-8">
-  <button onclick="filterCards('all')" class="filter-btn px-3 py-1 text-xs bg-stone-800 text-white rounded-full" data-filter="all">All</button>
+  <button onclick="filterCards('all')" class="filter-btn px-3 py-1 text-xs bg-lime-400 text-lime-700 rounded-full" data-filter="all">All</button>
 {% for cat in categories %}
   <button onclick="filterCards('{{ cat }}')" class="filter-btn px-3 py-1 text-xs bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-300 rounded-full hover:bg-stone-300 dark:hover:bg-stone-600" data-filter="{{ cat }}">{{ cat }}</button>
 {% endfor %}
@@ -54,10 +54,10 @@ function filterCards(category) {
   buttons.forEach(btn => {
     if (btn.dataset.filter === category) {
       btn.classList.remove('bg-stone-200', 'dark:bg-stone-700', 'text-stone-600', 'dark:text-stone-300');
-      btn.classList.add('bg-stone-800', 'text-white');
+      btn.classList.add('bg-lime-400', 'text-lime-700');
     } else {
       btn.classList.add('bg-stone-200', 'dark:bg-stone-700', 'text-stone-600', 'dark:text-stone-300');
-      btn.classList.remove('bg-stone-800', 'text-white');
+      btn.classList.remove('bg-lime-400', 'text-lime-700');
     }
   });
 
