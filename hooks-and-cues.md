@@ -2,6 +2,7 @@
 layout: page
 title: Hooks & Cues
 permalink: /hooks-and-cues/
+updated_at: 2026-03-10
 ---
 
 # Hooks & Cues
@@ -23,13 +24,18 @@ Hooks are shell scripts that run in response to Claude Code events.
 
 | Event | When | Common Uses |
 |-------|------|-------------|
-| `SessionStart` | Session begins/resumes | Context injection, marker clearing |
-| `UserPromptSubmit` | User sends prompt | Cue matching, duration monitoring |
-| `PreToolUse` | Before tool executes | Validation, cue injection, principle reinforcement |
+| `SessionStart` | Session begins/resumes | Context injection, marker clearing, health reporting |
+| `UserPromptSubmit` | User sends prompt | Cue matching, duration monitoring, state triggers |
+| `PreToolUse` | Before tool executes | Validation, cue injection, guards, principle reinforcement |
 | `PostToolUse` | After tool succeeds | Impact logging, pattern detection, principle activation |
 | `PostToolUseFailure` | After tool fails | Friction classification |
-| `PreCompact` | Before context compaction | Session health capture |
-| `Stop` | Session ending | Enforcement gates |
+| `PreCompact` | Before context compaction | Session health capture, compaction tracking |
+| `Stop` | Session ending | Enforcement gates, tradeoff capture |
+| `SessionEnd` | Session terminates | Completion metrics, learning suggestions |
+| `SubagentStart` | Subagent spawned | Subagent-specific cue injection |
+| `TaskCompleted` | Task marked complete | Completion criteria validation |
+| `WorktreeCreate` | Git worktree created | Worktree tracking |
+| `WorktreeRemove` | Git worktree removed | Worktree cleanup tracking |
 
 ### Example: Impact Extractor
 
@@ -37,15 +43,40 @@ Hooks are shell scripts that run in response to Claude Code events.
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Source shared utilities (required for hook_register)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$SCRIPT_DIR/validate-path.sh"
+
+# Register for health monitoring
+hook_register "impact-extractor"
+
 # Read event payload
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 
 if [[ -n "$FILE_PATH" ]]; then
   # Emit structured event
-  echo "$INPUT" | dev-os-emit.sh "tool_write" "{\"files\": [\"$FILE_PATH\"]}"
+  echo "$INPUT" | "$DEV_OS_EMIT" "tool_write" "{\"files\": [\"$FILE_PATH\"]}"
 fi
+
+# Exit 0 = success logged automatically via trap
 ```
+
+### Hook Registration Pattern
+
+All hooks should use `hook_register` for observability:
+
+```bash
+source "$HOME/.claude/hooks/validate-path.sh"
+hook_register "my-hook-name"  # Called at start
+
+# Hook logic...
+
+# On success: exit 0 (trap logs automatically)
+# On failure: hook_failure "error message"
+```
+
+This enables the hook health monitoring system (see [Testing](#testing)).
 
 ### Session & Principle Hooks
 
@@ -89,10 +120,39 @@ Different events expect different output formats:
 
 | Event | Output Format | Effect |
 |-------|---------------|--------|
-| PreToolUse | `{"permissionDecision": "allow"}` | Allow/block tool |
+| PreToolUse | `{"permissionDecision": "allow"}` | Allow tool |
 | PreToolUse | `{"ok": false, "error": "..."}` | Block with error |
-| PostToolUse | `{"hookSpecificOutput": {"context": "..."}}` | Inject into context |
+| PostToolUse | `{"hookSpecificOutput": {"additionalContext": "..."}}` | Inject into context |
 | Stop | `{"ok": false, "reason": "..."}` | Block session end |
+| Stop | `{"ok": true}` | Allow session end |
+
+### Hook Types
+
+Hooks can be configured as different types:
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| `command` | Shell script execution | Most hooks |
+| `agent` | Claude subagent with prompt | Complex reasoning (e.g., tradeoff extraction) |
+| `async` | Non-blocking execution | Test runners, notifications |
+
+**Agent hook example:**
+```json
+{
+  "type": "agent",
+  "prompt": "Analyze this change and extract tradeoffs...",
+  "timeout": 60
+}
+```
+
+**Async hook example:**
+```json
+{
+  "type": "command",
+  "command": "~/.claude/hooks/PostToolUse/async-test-runner.sh",
+  "async": true
+}
+```
 
 ### Blocking vs Warning
 
@@ -135,6 +195,17 @@ scope: agent                         # agent | subagent | agent, subagent
 # Semantic matching (fallback)
 description: Git commit workflow and version control
 vocabulary: commit push amend rebase merge
+
+# Governance traceability (optional but recommended)
+provenance:
+  policy:
+    - uri: home/.claude/governance/policies/git-workflow.md
+      type: governance-doc
+  controls:
+    - id: GIT-001
+      name: Conventional Commits
+      justifications:
+        - Consistent commit messages enable automated changelogs
 ---
 
 # Commit Cue
@@ -143,6 +214,20 @@ vocabulary: commit push amend rebase merge
 - Sign commits with GPG
 - Keep commits atomic and focused
 ```
+
+### Provenance Block
+
+The `provenance:` block links cues to governance policies for traceability:
+
+| Field | Purpose |
+|-------|---------|
+| `policy.uri` | Path to governance document |
+| `policy.type` | Document type (governance-doc, adr, etc.) |
+| `controls.id` | Control identifier for auditing |
+| `controls.name` | Human-readable control name |
+| `controls.justifications` | Why this control exists |
+
+This enables "compiled policy"—governance documents compressed into agent directives with full traceability.
 
 ### Matching Priority
 
@@ -268,22 +353,58 @@ echo '{"hookSpecificOutput": {"context": "Your message here"}}'
 
 ### Configuration
 
-Add to `~/.claude/settings.json`:
+Add to `~/.claude/settings/common/hooks.jsonc` (or `~/.claude/settings.json`):
 
-```json
+```jsonc
 {
   "hooks": {
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
-        "command": "~/.claude/hooks/common/PostToolUse/my-hook.sh"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME\"/.claude/hooks/PostToolUse/my-hook.sh"
+          },
+          {
+            "type": "command",
+            "command": "\"$HOME\"/.claude/hooks/PostToolUse/async-task.sh",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "*",  // All tools
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME\"/.claude/hooks/PostToolUse/universal-hook.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
 
+**Key points:**
+- Use `hooks:` array for multiple hooks per matcher
+- Quote `$HOME` as `"$HOME"` for shell expansion
+- Use `async: true` for non-blocking hooks
+- Matcher `*` matches all tools
+
 ## Creating Cues
+
+### Cue Locations
+
+Cues are loaded from two locations:
+
+| Location | Scope | Use Case |
+|----------|-------|----------|
+| `~/.claude/cues/` | Global | Personal conventions across all projects |
+| `PROJECT/.claude/cues/` | Project | Project-specific guidance |
+
+Project cues override global cues with the same name.
 
 ### Basic Cue
 
@@ -333,24 +454,116 @@ fi
 
 ```bash
 echo '{"tool_name": "Write", "tool_input": {"file_path": "test.rb"}}' | \
-  ~/.claude/hooks/common/PostToolUse/my-hook.sh
+  ~/.claude/hooks/PostToolUse/my-hook.sh
 ```
 
 ### Test Cue Matching
 
 ```bash
-~/.claude/hooks/common/match-cues.sh prompt "commit my changes"
-~/.claude/hooks/common/match-cues.sh bash "git push origin main"
-~/.claude/hooks/common/match-cues.sh file ".env.local"
+~/.claude/hooks/match-cues.sh prompt "commit my changes"
+~/.claude/hooks/match-cues.sh command "git push origin main"
+~/.claude/hooks/match-cues.sh file ".env.local"
 ```
 
-### Check Hook Health
+### Preview Cue Content
 
 ```bash
-~/.claude/hooks/common/hook-health.sh           # 24h summary
-~/.claude/hooks/common/hook-health.sh --recent  # Last 10 runs
-~/.claude/hooks/common/hook-health.sh --failures
+~/.claude/hooks/show-cue.sh commit  # Show cue body without frontmatter
 ```
+
+### Hook Health CLI
+
+The `hook-health.sh` CLI provides observability into hook execution:
+
+```bash
+# Summary reports
+hook-health.sh              # 24-hour summary
+hook-health.sh 168          # 7-day summary (168 hours)
+
+# Real-time monitoring
+hook-health.sh --recent     # Last 10 executions
+hook-health.sh --tail       # Follow log in real-time
+hook-health.sh --failures   # Show only failures
+```
+
+**Example output:**
+```
+=== Hook Health Report (24h) ===
+
+✓ All hooks healthy - 245 successful executions
+
+Per-Hook Breakdown:
+  ✓ impact-extractor: 89 ok (12ms avg)
+  ✓ skill-gap-detector: 45 ok (8ms avg)
+  ✓ cue-injector-prompt: 111 ok (15ms avg)
+```
+
+### Health Log Location
+
+Hook health data is logged to `~/.claude/hook-health.jsonl`:
+
+```json
+{
+  "timestamp": "2026-03-10T15:30:00Z",
+  "hook": "impact-extractor",
+  "status": "success",
+  "duration_ms": 12,
+  "error": null
+}
+```
+
+## Shared Utilities
+
+The `validate-path.sh` script provides common utilities for hooks:
+
+### Path Constants
+
+```bash
+source "$HOME/.claude/hooks/validate-path.sh"
+
+$CLAUDE_HOME              # ~/.claude
+$CLAUDE_EVENTS_LOG        # ~/.claude/dev-os-events.jsonl
+$CLAUDE_FRICTION_LOG      # ~/.claude/skill-friction-log.jsonl
+$CLAUDE_IMPACT_LOG        # ~/.claude/impact-log.jsonl
+$CLAUDE_HOOK_HEALTH_LOG   # ~/.claude/hook-health.jsonl
+$DEV_OS_EMIT              # ~/.claude/hooks/dev-os-emit.sh
+```
+
+### Validation Functions
+
+```bash
+# Check existence (returns 0/1, never exits)
+validate_file_exists "/path/to/file"
+validate_file_readable "/path/to/file"
+validate_file_writable "/path/to/file"
+validate_dir_exists "/path/to/dir"
+
+# Create if needed
+ensure_dir_exists "/path/to/dir"
+ensure_file_exists "/path/to/file"
+
+# Size guards
+guard_log_size "$LOG_FILE" 50  # Warn if >50MB
+```
+
+### Hook Health Functions
+
+```bash
+hook_register "my-hook"     # Start timing, set up trap
+hook_success                # Explicit success (optional)
+hook_failure "error msg"    # Log failure with message
+hook_health_summary 24      # Get JSON summary for last 24h
+```
+
+## Environment Variables
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `CLAUDE_HOME` | `~/.claude` | Base directory |
+| `CLAUDE_PROJECT_DIR` | Current project | Project context |
+| `CUE_SCOPE_FILTER` | `agent` | Cue scope filtering |
+| `CUE_SEMANTIC` | `1` | Enable semantic matching |
+| `NCD_THRESHOLD` | `0.58` | Semantic similarity threshold |
 
 ---
 

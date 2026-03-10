@@ -2,6 +2,7 @@
 layout: page
 title: Event Schema
 permalink: /event-schema/
+updated_at: 2026-03-10
 ---
 
 # Event Schema
@@ -65,22 +66,56 @@ Emitted when a tool execution fails.
 {
   "event_type": "tool_failure",
   "payload": {
-    "tool_name": "Read",
+    "tool": "Read",
+    "file_path": "/path/to/missing.rb",
+    "file_context": "user-file",
+    "file_type": "ruby",
     "domain": "state",
     "subdomain": "file-not-found",
-    "hints": ["Check if file exists before reading"],
-    "error_snippet": "No such file: /path/to/missing.rb"
+    "hints": ["Verify the file path exists; check for typos or stale references"],
+    "friction_domain": {
+      "domain": "state",
+      "subdomain": "file-not-found",
+      "signals": ["state:file-not-found"]
+    },
+    "error_excerpt": "No such file: /path/to/missing.rb",
+    "repeat_count": 0,
+    "is_subagent": false,
+    "context": {
+      "file_context": "user-file",
+      "file_type": "ruby",
+      "file_exists": false,
+      "file_is_dir": false,
+      "file_size_kb": 0
+    }
   }
 }
 ```
 
 | Payload Field | Type | Description |
 |---------------|------|-------------|
-| `tool_name` | string | Which tool failed |
+| `tool` | string | Which tool failed |
+| `file_path` | string | Path to file (if applicable) |
+| `file_context` | string | Context classification (see below) |
+| `file_type` | string | File extension type |
 | `domain` | string | Top-level friction category |
 | `subdomain` | string | Specific friction type |
-| `hints` | string[] | Suggestions for resolution |
-| `error_snippet` | string | First 200 chars of error |
+| `hints` | string[] | Context-aware suggestions |
+| `friction_domain` | object | Structured domain with signals |
+| `error_excerpt` | string | First 800 chars of error |
+| `repeat_count` | number | Times this pattern repeated recently |
+| `is_subagent` | boolean | Whether in subagent context |
+| `context` | object | File metadata (for Read failures) |
+
+**File context values:**
+- `subagent-session` - Subagent session files
+- `session-log` - Project session logs
+- `telemetry-log` - Dev OS event logs
+- `hook-script` - Hook scripts
+- `cue-file` - Cue definitions
+- `tradeoff-marker` - Pending tradeoff markers
+- `claude-internal` - Other ~/.claude files
+- `user-file` - User project files
 
 See [Friction Taxonomy](/friction-taxonomy/) for domain/subdomain hierarchy.
 
@@ -232,7 +267,7 @@ Emitted when dependency files are modified.
 
 ### cue_fired
 
-Emitted when a cue is injected.
+Emitted when a cue is injected (legacy format, see also `cue_matched`).
 
 ```json
 {
@@ -249,9 +284,11 @@ Emitted when a cue is injected.
 | Payload Field | Type | Description |
 |---------------|------|-------------|
 | `cue_id` | string | Cue identifier |
-| `trigger_type` | string | `prompt`, `bash`, or `file` |
+| `trigger_type` | string | `prompt`, `command`, or `file` |
 | `has_macro` | boolean | Whether macro was executed |
 | `query` | string | Text that triggered the cue |
+
+**Note:** Newer hooks emit `cue_matched` with richer match details.
 
 ### session_duration
 
@@ -262,7 +299,7 @@ Emitted periodically to track session length and archetype.
   "event_type": "session_duration",
   "payload": {
     "duration_minutes": 145,
-    "archetype": "marathon",
+    "archetype": "long",
     "has_task_list": true
   }
 }
@@ -271,8 +308,17 @@ Emitted periodically to track session length and archetype.
 | Payload Field | Type | Description |
 |---------------|------|-------------|
 | `duration_minutes` | number | Minutes since session start |
-| `archetype` | string | `sprint` (<30m), `flow` (30-120m), or `marathon` (>120m) |
+| `archetype` | string | Duration category (see below) |
 | `has_task_list` | boolean | Whether task list is active |
+
+**Duration categories:**
+| Category | Duration | Guidance |
+|----------|----------|----------|
+| `quick` | < 15 min | Short task |
+| `short` | 15-60 min | Focused work |
+| `medium` | 1-3 hours | Consider task list |
+| `long` | 3-8 hours | Break checkpoints |
+| `marathon` | 8+ hours | High compaction risk |
 
 See [Session Archetype](/glossary/session-archetype/) for archetype definitions.
 
@@ -366,6 +412,127 @@ Emitted when prompts indicate upfront design work.
 
 See [Domain Modeling](/glossary/domain-modeling/) for correlation with reversals.
 
+### session_start
+
+Emitted when a session begins.
+
+```json
+{
+  "event_type": "session_start",
+  "payload": {
+    "start_time": "2026-03-10T10:00:00Z"
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `start_time` | ISO 8601 | When the session started |
+
+### session_end
+
+Emitted when a session terminates.
+
+```json
+{
+  "event_type": "session_end",
+  "payload": {
+    "end_time": "2026-03-10T12:30:00Z",
+    "start_time": "2026-03-10T10:00:00Z",
+    "duration_seconds": 9000,
+    "duration_minutes": 150,
+    "duration_category": "medium"
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `end_time` | ISO 8601 | When the session ended |
+| `start_time` | ISO 8601 | When the session started (if known) |
+| `duration_seconds` | number | Total session duration |
+| `duration_minutes` | number | Duration in minutes |
+| `duration_category` | string | `quick`, `short`, `medium`, `long`, or `marathon` |
+
+### skill_invoked
+
+Emitted when a skill is invoked via the Skill tool.
+
+```json
+{
+  "event_type": "skill_invoked",
+  "payload": {
+    "skill": "weekly-review",
+    "args": null
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `skill` | string | Skill name |
+| `args` | string | Arguments passed (if any) |
+
+### context_compact
+
+Emitted when context compaction occurs.
+
+```json
+{
+  "event_type": "context_compact",
+  "payload": {
+    "transcript_bytes": 450000,
+    "message_count": 85,
+    "compaction_number": 2,
+    "reason": "context_window_limit"
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `transcript_bytes` | number | Size of transcript being compacted |
+| `message_count` | number | Approximate message count |
+| `compaction_number` | number | Which compaction this session (1, 2, 3...) |
+| `reason` | string | Why compaction occurred |
+
+### cue_matched
+
+Emitted when cues are matched and injected.
+
+```json
+{
+  "event_type": "cue_matched",
+  "payload": {
+    "cues": ["file-verification", "testing"],
+    "trigger_type": "prompt",
+    "prompt_snippet": "let's update the test file...",
+    "match_details": [
+      {
+        "cue": "file-verification",
+        "match_type": "pattern"
+      },
+      {
+        "cue": "testing",
+        "match_type": "vocabulary"
+      }
+    ]
+  }
+}
+```
+
+| Payload Field | Type | Description |
+|---------------|------|-------------|
+| `cues` | string[] | Cues that matched |
+| `trigger_type` | string | `prompt`, `command`, or `file` |
+| `prompt_snippet` | string | First 100 chars of trigger |
+| `match_details` | object[] | Per-cue match information |
+
+**Match types:**
+- `pattern` - Regex pattern matched
+- `vocabulary` - Vocabulary word matched
+- `semantic` - NCD similarity matched
+
 ## Supporting Log Files
 
 ### impact-log.jsonl
@@ -390,54 +557,123 @@ Error classification for pattern detection:
 {
   "timestamp": "2026-02-27T10:30:00Z",
   "tool_name": "Read",
+  "file_paths": ["/path/to/missing.rb"],
+  "session_id": "abc123",
+  "is_subagent": false,
   "domain": "state",
   "subdomain": "file-not-found",
-  "hints": ["Check if file exists"],
-  "error_snippet": "No such file..."
+  "error_excerpt": "No such file...",
+  "hints": ["Verify the file path exists"],
+  "signals": ["state:file-not-found"],
+  "context": {
+    "file_context": "user-file",
+    "file_type": "ruby",
+    "file_exists": false
+  }
 }
 ```
 
+### hook-health.jsonl
+
+Hook execution monitoring:
+
+```json
+{
+  "timestamp": "2026-03-10T15:30:00Z",
+  "hook": "impact-extractor",
+  "status": "success",
+  "duration_ms": 12,
+  "error": null
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `timestamp` | ISO 8601 | When hook executed |
+| `hook` | string | Hook name (from `hook_register`) |
+| `status` | string | `success` or `failure` |
+| `duration_ms` | number | Execution time in milliseconds |
+| `error` | string | Error message (if failed) |
+
+Use `hook-health.sh` CLI to query this log (see [Hooks & Cues](/hooks-and-cues/#hook-health-cli)).
+
 ## Querying Events
+
+**Important:** Event logs can grow large. Always use `tail` or time filtering to avoid loading entire files.
 
 ### Recent events
 
 ```bash
+# Last 20 events (safe)
 tail -20 ~/.claude/dev-os-events.jsonl | jq .
+
+# Last 100 events of specific type
+tail -500 ~/.claude/dev-os-events.jsonl | jq 'select(.event_type == "tool_failure")'
 ```
 
 ### Filter by type
 
 ```bash
-jq 'select(.event_type == "tool_failure")' ~/.claude/dev-os-events.jsonl
+# Use grep + jq for large files (avoids loading all into memory)
+grep '"event_type":"tool_failure"' ~/.claude/dev-os-events.jsonl | tail -50 | jq .
 ```
 
-### Count by type
+### Count by type (recent)
 
 ```bash
-jq -s 'group_by(.event_type) | map({type: .[0].event_type, count: length})' \
-  ~/.claude/dev-os-events.jsonl
+tail -1000 ~/.claude/dev-os-events.jsonl | jq -s '
+  group_by(.event_type)
+  | map({type: .[0].event_type, count: length})
+  | sort_by(-.count)'
 ```
 
 ### Last 7 days
 
 ```bash
+# macOS
 SINCE=$(date -v-7d +%Y-%m-%d)
-jq -s --arg since "$SINCE" '[.[] | select(.timestamp >= $since)]' \
-  ~/.claude/dev-os-events.jsonl
+# Linux
+# SINCE=$(date -d '7 days ago' +%Y-%m-%d)
+
+tail -5000 ~/.claude/dev-os-events.jsonl | jq -s --arg since "$SINCE" '
+  [.[] | select(.timestamp >= $since)]'
 ```
 
 ### Friction by domain
 
 ```bash
-jq -s '[.[] | select(.event_type == "tool_failure")]
-  | group_by(.payload.domain)
-  | map({domain: .[0].payload.domain, count: length})' \
-  ~/.claude/dev-os-events.jsonl
+grep '"event_type":"tool_failure"' ~/.claude/dev-os-events.jsonl | tail -500 | jq -s '
+  group_by(.payload.domain)
+  | map({domain: .[0].payload.domain, count: length})
+  | sort_by(-.count)'
+```
+
+### Hook health summary
+
+```bash
+# Use the CLI
+~/.claude/hooks/hook-health.sh           # 24h summary
+~/.claude/hooks/hook-health.sh 168       # 7-day summary
+~/.claude/hooks/hook-health.sh --failures
 ```
 
 ## Log Rotation
 
-Prevent unbounded growth:
+### Automatic Guards
+
+Hooks use `guard_log_size` to prevent unbounded growth:
+
+```bash
+source "$HOME/.claude/hooks/validate-path.sh"
+
+# Warn and rotate if log exceeds 50MB
+if ! guard_log_size "$LOG_FILE" 50; then
+  # Rotate: keep last 1000 entries
+  tail -1000 "$LOG_FILE" > "$LOG_FILE.tmp" && mv "$LOG_FILE.tmp" "$LOG_FILE"
+fi
+```
+
+### Manual Rotation
 
 ```bash
 # Keep last 10000 events
@@ -445,14 +681,33 @@ tail -10000 ~/.claude/dev-os-events.jsonl > /tmp/events.tmp
 mv /tmp/events.tmp ~/.claude/dev-os-events.jsonl
 ```
 
-Consider archiving before rotation:
+### Archive Before Rotation
 
 ```bash
 # Archive then rotate
+mkdir -p ~/.claude/archive
 cp ~/.claude/dev-os-events.jsonl ~/.claude/archive/events-$(date +%Y%m%d).jsonl
 tail -10000 ~/.claude/dev-os-events.jsonl > /tmp/events.tmp
 mv /tmp/events.tmp ~/.claude/dev-os-events.jsonl
 ```
+
+### Recommended Rotation Schedule
+
+| Log File | Max Size | Keep Entries |
+|----------|----------|--------------|
+| `dev-os-events.jsonl` | 50MB | 10,000 |
+| `skill-friction-log.jsonl` | 50MB | 1,000 |
+| `impact-log.jsonl` | 20MB | 5,000 |
+| `hook-health.jsonl` | 10MB | 5,000 |
+
+## Log File Locations
+
+| File | Purpose |
+|------|---------|
+| `~/.claude/dev-os-events.jsonl` | Primary event stream |
+| `~/.claude/skill-friction-log.jsonl` | Friction/error details |
+| `~/.claude/impact-log.jsonl` | File change tracking |
+| `~/.claude/hook-health.jsonl` | Hook execution monitoring |
 
 ---
 
