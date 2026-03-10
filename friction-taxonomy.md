@@ -2,6 +2,7 @@
 layout: page
 title: Friction Taxonomy
 permalink: /friction-taxonomy/
+updated_at: 2026-03-10
 ---
 
 # Friction Taxonomy
@@ -15,6 +16,8 @@ When a tool fails during a Claude Code session, the `skill-gap-detector.sh` hook
 - **Pattern detection** across sessions
 - **Skill gap identification** over time
 - **Deliberate practice recommendations**
+- **Context-aware hints** based on file type and location
+- **Ephemeral file suppression** to reduce noise from expected failures
 
 ## Primary Domains
 
@@ -41,10 +44,22 @@ The most common friction domain. Occurs when operations encounter unexpected sys
 flowchart LR
     A[state] --> B[file-not-found]
     A --> C[resource-limit]
-    A --> D[conflict]
-    A --> E[command-failed]
-    A --> F[type-mismatch]
+    A --> D[command-file-missing]
+    A --> E[type-mismatch]
+    A --> F[conflict]
+    A --> G[identity]
+    A --> H[command-failed]
 {% endmermaid %}
+
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `file-not-found` | `state:file-not-found` | ENOENT, missing files |
+| `resource-limit` | `state:resource-limit` | File too large, token limits |
+| `command-file-missing` | `state:command-missing-file` | Exit code + missing file |
+| `type-mismatch` | `state:dir-file-mismatch` | EISDIR, expected file got directory |
+| `conflict` | `state:conflict` | Stale locks, concurrent modifications |
+| `identity` | `state:file-identity` | Symlink loops, same file errors |
+| `command-failed` | `state:command-exit-nonzero` | Non-zero exit code (fallback) |
 
 **Common causes:**
 - Working with newly created files before they exist
@@ -63,14 +78,15 @@ Parse errors from malformed input.
 {% mermaid %}
 flowchart LR
     A[syntax] --> B[parse]
-    A --> C[encoding]
-    A --> D[format]
+    A --> C[json]
+    A --> D[yaml]
 {% endmermaid %}
 
-**Common causes:**
-- Invalid JSON in tool arguments
-- Mixed tabs/spaces in YAML
-- Unclosed brackets in code
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `parse` | `syntax:parse-error` | Missing brackets, unterminated strings |
+| `json` | `syntax:json-parse` | Trailing commas, unquoted keys |
+| `yaml` | `syntax:yaml-parse` | Bad indentation, tabs in YAML |
 
 **Practice recommendations:**
 - Validate JSON/YAML before writing
@@ -83,16 +99,16 @@ Type system complaints.
 
 {% mermaid %}
 flowchart LR
-    A[type] --> B[ruby-sorbet]
-    A --> C[typescript]
-    A --> D[rust-borrow]
-    A --> E[inference]
+    A[type] --> B[typescript]
+    A --> C[ruby-sorbet]
+    A --> D[rust-ownership]
 {% endmermaid %}
 
-**Common causes:**
-- Nil/null in unexpected places
-- Interface mismatches
-- Generic type confusion
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `typescript` | `type:typescript` | Type mismatches, assignment errors |
+| `ruby-sorbet` | `type:sorbet` | Sorbet type violations |
+| `rust-ownership` | `type:rust-borrow` | Borrow checker, lifetime errors |
 
 **Practice recommendations:**
 - Add type annotations at boundaries
@@ -109,13 +125,14 @@ flowchart LR
     A --> C[node-npm]
     A --> D[rust-cargo]
     A --> E[python-module]
-    A --> F[version]
 {% endmermaid %}
 
-**Common causes:**
-- Missing bundle install after Gemfile changes
-- Conflicting version requirements
-- Corrupted lock files
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `ruby-bundler` | `dependency:bundler` | Missing gems, Gemfile.lock issues |
+| `node-npm` | `dependency:npm` | Missing packages, peer deps |
+| `rust-cargo` | `dependency:cargo` | Missing crates, Cargo.toml errors |
+| `python-module` | `dependency:python-import` | ModuleNotFoundError, ImportError |
 
 **Practice recommendations:**
 - Run install commands after dependency changes
@@ -128,16 +145,14 @@ Access control failures.
 
 {% mermaid %}
 flowchart LR
-    A[permission] --> B[auth]
-    A --> C[file]
-    A --> D[network]
-    A --> E[process]
+    A[permission] --> B[filesystem]
+    A --> C[auth]
 {% endmermaid %}
 
-**Common causes:**
-- Expired tokens
-- Wrong file ownership
-- Missing sudo
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `filesystem` | `permission:fs-access` | EACCES, EPERM, read-only filesystem |
+| `auth` | `permission:auth` | 401/403, invalid tokens, expired credentials |
 
 **Practice recommendations:**
 - Check credentials before operations
@@ -150,16 +165,16 @@ Connection and communication failures.
 
 {% mermaid %}
 flowchart LR
-    A[network] --> B[timeout]
-    A --> C[connection]
+    A[network] --> B[connection]
+    A --> C[timeout]
     A --> D[ssl]
-    A --> E[dns]
 {% endmermaid %}
 
-**Common causes:**
-- Slow services
-- VPN disconnects
-- Expired certificates
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `connection` | `network:connection` | ECONNREFUSED, DNS failures, unreachable |
+| `timeout` | `network:timeout` | ETIMEDOUT, deadline exceeded |
+| `ssl` | `network:ssl` | Certificate errors, SSL handshake failures |
 
 **Practice recommendations:**
 - Add timeout handling
@@ -173,20 +188,23 @@ Environment and configuration issues.
 {% mermaid %}
 flowchart LR
     A[config] --> B[env-var]
-    A --> C[file]
-    A --> D[path]
-    A --> E[invalid]
+    A --> C[rails-autoload]
 {% endmermaid %}
+
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `env-var` | `config:env-var` | Missing environment variables |
+| `rails-autoload` | `config:rails-autoload` | Zeitwerk errors, uninitialized constants |
 
 **Common causes:**
 - Missing .env files
 - Wrong environment active
-- Outdated config after changes
+- File path doesn't match Rails constant naming
 
 **Practice recommendations:**
 - Document required env vars
 - Use config validation at startup
-- Provide sensible defaults
+- Run `zeitwerk:check` for Rails autoloading issues
 
 ### Testing
 
@@ -195,10 +213,11 @@ Test execution failures.
 {% mermaid %}
 flowchart LR
     A[testing] --> B[assertion]
-    A --> C[setup]
-    A --> D[timeout]
-    A --> E[flaky]
 {% endmermaid %}
+
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `assertion` | `testing:assertion` | RSpec, Jest, pytest failures |
 
 **Common causes:**
 - Actual bugs in code
@@ -216,21 +235,61 @@ Compilation and bundling failures.
 
 {% mermaid %}
 flowchart LR
-    A[build] --> B[compile]
-    A --> C[bundle]
-    A --> D[link]
-    A --> E[target]
+    A[build] --> B[bundler]
+    A --> C[native]
 {% endmermaid %}
+
+| Subdomain | Signals | Triggers |
+|-----------|---------|----------|
+| `bundler` | `build:bundler` | Webpack, Vite, esbuild, Rollup errors |
+| `native` | `build:native-compile` | gcc, clang, Make, CMake errors |
 
 **Common causes:**
 - Syntax errors preventing compilation
 - Missing build dependencies
-- Platform-specific code issues
+- ESM/CJS compatibility issues
 
 **Practice recommendations:**
 - Run builds frequently
 - Keep build tools updated
 - Use CI to catch cross-platform issues
+
+## File Context Classification
+
+Beyond domain classification, the skill-gap-detector identifies the *context* of failures based on file paths. This enables context-specific hints.
+
+{% mermaid %}
+flowchart TD
+    A[File Path] --> B{Match pattern}
+    B --> C[subagent-session]
+    B --> D[session-log]
+    B --> E[telemetry-log]
+    B --> F[hook-script]
+    B --> G[cue-file]
+    B --> H[tradeoff-marker]
+    B --> I[claude-internal]
+    B --> J[user-file]
+{% endmermaid %}
+
+| Context | Path Pattern | Example Hint |
+|---------|-------------|--------------|
+| `subagent-session` | `~/.claude/projects/*/subagents/*` | "Subagent may have completed" |
+| `session-log` | `~/.claude/projects/*.jsonl` | "Use grep or offset/limit" |
+| `telemetry-log` | `~/.claude/dev-os-events.jsonl` | "Use tail -100 instead" |
+| `hook-script` | `~/.claude/hooks/*` | Standard hints |
+| `cue-file` | `~/.claude/cues/*` | Standard hints |
+| `tradeoff-marker` | `~/.claude/pending-tradeoffs/*` | "Marker may be processed" |
+| `claude-internal` | `~/.claude/*` | Standard hints |
+| `user-file` | Everything else | Standard hints |
+
+## Ephemeral File Suppression
+
+Some "file not found" errors are expected behavior, not friction:
+
+- **Subagent sessions** are cleaned up after completion
+- **Tradeoff markers** are processed and removed
+
+These are silently skipped to reduce noise in friction metrics.
 
 ## Pattern Detection
 
@@ -265,21 +324,41 @@ This creates a feedback loop for improvement.
 
 ## Classification Logic
 
-The `skill-gap-detector.sh` hook uses pattern matching on error messages:
+The `skill-gap-detector.sh` hook uses pattern matching on error messages with priority ordering:
 
 ```bash
-# Example classification rules
-if echo "$error" | grep -qE "No such file|not found|does not exist"; then
-  DOMAIN="state"
-  SUBDOMAIN="file-not-found"
-elif echo "$error" | grep -qE "too large|limit exceeded|timeout"; then
-  DOMAIN="state"
-  SUBDOMAIN="resource-limit"
-elif echo "$error" | grep -qE "permission denied|access denied"; then
-  DOMAIN="permission"
-  SUBDOMAIN="file"
+# Helper functions
+add_hint() { HINTS+=("$1"); }
+add_signal() { SIGNALS+=("$1"); }
+set_domain() {
+  if [[ "$DOMAIN" == "unknown" ]]; then  # First match wins
+    DOMAIN="$1"
+    SUBDOMAIN="${2:-}"
+  fi
+}
+
+# Priority 1: File not found (most common)
+if echo "$TEXT" | grep -qiE "file does not exist|no such file|ENOENT"; then
+  set_domain "state" "file-not-found"
+  add_signal "state:file-not-found"
+  # Context-specific hints based on FILE_CONTEXT
 fi
+
+# Priority 2: Resource limits
+if echo "$TEXT" | grep -qiE "too large|size limit|token limit"; then
+  set_domain "state" "resource-limit"
+  add_signal "state:resource-limit"
+fi
+
+# ... additional patterns in priority order
 ```
+
+The classification outputs:
+- **domain**: Primary error category
+- **subdomain**: Specific error type within domain
+- **signals**: Machine-readable tags for aggregation
+- **hints**: Human-readable suggestions
+- **context**: File metadata when relevant
 
 Unrecognized errors default to `domain: unknown`.
 
@@ -288,12 +367,51 @@ Unrecognized errors default to `domain: unknown`.
 To improve classification accuracy, extend the pattern matching in `skill-gap-detector.sh`:
 
 ```bash
-# Add before the fallback case
-elif echo "$error" | grep -qE "your specific pattern"; then
-  DOMAIN="appropriate_domain"
-  SUBDOMAIN="specific_subdomain"
+# Add in the appropriate section (SYNTAX, TYPE, DEPENDENCY, etc.)
+if echo "$TEXT" | grep -qiE "your specific pattern"; then
+  set_domain "appropriate_domain" "specific_subdomain"
+  add_signal "domain:subdomain"
+  add_hint "Helpful suggestion for this error type."
 fi
 ```
+
+**Guidelines:**
+- Place patterns in the correct domain section
+- Use `set_domain` (first match wins)
+- Add a signal for aggregation
+- Include actionable hints
+- Test with actual error messages
+
+## Event Output
+
+Each friction event is logged with rich context:
+
+```json
+{
+  "timestamp": "2026-03-10T15:30:00Z",
+  "tool_name": "Read",
+  "file_paths": ["/path/to/large-file.jsonl"],
+  "session_id": "abc123",
+  "is_subagent": false,
+  "domain": "state",
+  "subdomain": "resource-limit",
+  "error_excerpt": "File content exceeds maximum...",
+  "hints": ["Use tail -100 or grep instead"],
+  "signals": ["state:resource-limit"],
+  "context": {
+    "file_context": "telemetry-log",
+    "file_type": "jsonl-log",
+    "file_exists": true,
+    "file_size_kb": 2048
+  }
+}
+```
+
+This structured output enables:
+- Weekly aggregation by domain/subdomain
+- Repeat pattern detection (same tool + subdomain)
+- Context-aware analysis (which file types cause friction)
+- Subagent vs main agent comparison
 
 ---
 

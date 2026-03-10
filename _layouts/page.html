@@ -13,6 +13,11 @@ layout: default
       {{ page.subtitle }}
     </p>
     {% endif %}
+    {% if page.updated_at %}
+    <p class="text-xs text-stone-400 mt-2">
+      Last updated: {{ page.updated_at | date: "%B %d, %Y" }}
+    </p>
+    {% endif %}
   </header>
   {% endif %}
 
