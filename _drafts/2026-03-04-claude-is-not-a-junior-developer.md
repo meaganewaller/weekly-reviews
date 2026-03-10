@@ -2,6 +2,7 @@
 title: Claude Is Not Your Junior Developer
 date: 2026-03-04
 layout: post
+tags: ["claude-code", "productivity", "architecture", "systems-thinking"]
 ---
 
 
@@ -9,22 +10,11 @@ You've probably heard something like this:
 
 > Claude is like a junior developer on your team.
 
-You give it tasks.
-It writes code.
-Sometimes it gets things wrong.
-You review its work.
+You assign it tasks, it writes code; sometimes correctly, sometimes with some much-needed hand-holding, and at multiple points in the process you check-in to review their progress and process.
 
-Cute metaphor. Completely wrong.
+Cute metaphor, but it's completely wrong. People will design workflows based on their framing of a system, so we want to make sure we have the most accurate frame.
 
-And the metaphor matters, because the way people *frame* a system determines how they design workflows around it.
-
-Treat Claude like a junior dev and you’ll build fragile systems that break constantly.
-
-Treat it like what it actually is, and suddenly things start to make sense.
-
-Claude is not a junior developer.
-
-Claude is closer to a **CPU for language**.
+With that in mind, I propose that Claude is more like a CPU for language than it is a "junior developer". 
 
 ## Junior Developers Have Things Claude Does Not
 
@@ -39,13 +29,11 @@ They remember:
 * why a design decision was made
 * what broke in staging
 * the weird bug in the billing service
-* that you hate ActiveRecord callbacks
+* that we really try to avoid ActiveRecord callbacks
 
-Claude remembers **none of this**.
+Claude remembers none of this.
 
-Every interaction is effectively a fresh boot unless you reconstruct the context.
-
-If the context window doesn’t include something, it doesn’t exist.
+Every interaction is effectively a fresh boot unless you reconstruct the context. And you'll want to refresh it, because if the context window doesn't include something, it simply does not exist.
 
 ### Persistent Goals
 
@@ -58,14 +46,7 @@ They care about:
 * building better abstractions
 * not breaking production
 
-Claude has no goals.
-
-It is a **stateless prediction engine**.
-It predicts the next token based on context.
-
-That’s it.
-
-There is no agenda behind the output.
+Claude has no goals due to the fact that it's a stateless predication engine, it excels at predicting the next token based on context. But that's it.
 
 ### Understanding
 
@@ -78,27 +59,17 @@ They form models of:
 * where risk lives
 * which tradeoffs matter
 
-Claude doesn’t build internal models of your system.
-
-It builds **temporary probabilistic patterns** inside a single context window.
-
-Once the conversation ends, the model disappears.
+Claude builds temporary probabilistic patterns inside a single context window, so once the convo ends, the model disappears.
 
 ### Responsibility
 
-Junior developers can be held accountable.
+Junior developers can be held accountable. When they break something, you talk about it, they'll learn from it, their behavior changes. 
 
-If they break something, you talk about it.
-They learn from it.
-Their behavior changes.
-
-Claude cannot learn from mistakes inside your environment.
-
-Unless **you build the mechanism**.
+Claude cannot learn from mistakes inside your environment, UNLESS you build the mechanism.
 
 ## So What Is Claude?
 
-Claude is best understood as a **pattern engine with tools**.
+Claude is best understood as a pattern engine with tools.
 
 It is extremely good at:
 
@@ -131,9 +102,7 @@ Tool Execution
 Feedback Loop
 ```
 
-Claude is one component inside a system.
-
-Not the system itself.
+This positions Claude as but one component inside a system.
 
 ## Why the Junior Developer Metaphor Breaks Down
 
@@ -153,37 +122,35 @@ Then they get frustrated when the model:
 * writes contradictory code
 * makes bizarre design decisions
 
-But the system didn’t fail.
-
-The **mental model** failed.
+But the system didn’t fail, their mental model was faulty.
 
 ## Prompting Is Not the Real Work
 
-If Claude were a junior developer, the primary skill would be **communication**.
+If Claude were a junior developer, the primary skill would be communication.
 
-Prompt better.
-Explain the task more clearly.
-Refine the instructions.
+> Prompt better.
+>
+> Explain the task more clearly.
+>
+> Refine the instructions.
 
 But if Claude is a pattern engine, the real work shifts.
 
 The important problems become:
 
-* **context management**
-* **tool orchestration**
-* **policy enforcement**
-* **feedback loops**
-* **telemetry**
+* context management
+* tool orchestration
+* policy enforcement
+* feedback loops
+* telemetry
 
-In other words, the job becomes **systems design**.
+In other words, the job becomes _systems design_.
 
 ## The Real Problem: Statelessness
 
 The core limitation of LLM-based development workflows is simple.
 
-Claude is **stateless**.
-
-Every useful behavior must be reconstructed from scratch each time.
+Claude is stateless, so every useful behavior must be reconstructed from scratch each time.
 
 Which means if you want:
 
@@ -210,7 +177,7 @@ Examples:
 * testing requirements
 * refactor guidelines
 
-Instead of repeating them in prompts, you **inject them automatically**.
+Instead of repeating them in prompts, you inject them automatically.
 
 ### Context Compilers
 
@@ -223,7 +190,7 @@ Examples:
 * recent commits
 * project policies
 
-Context becomes **compiled input**, not random copy-paste.
+Context becomes compiled input, not random copy-paste.
 
 ### Tooling
 
@@ -236,7 +203,7 @@ Instead of hallucinating:
 * queries git
 * executes scripts
 
-Tools anchor the model to reality.
+Tools can be used to anchor the model to reality.
 
 ### Feedback Loops
 
@@ -248,8 +215,6 @@ Good workflows surface signals like:
 * failed tests
 * looping behaviors
 * abandoned approaches
-
-This is where telemetry becomes powerful.
 
 ## The Shift: Programming the Environment
 
@@ -265,19 +230,13 @@ AI-assisted programming looks more like:
 Human → System Design → AI → Code
 ```
 
-You are no longer just writing code.
-
-You are designing **systems that produce code**.
-
-The difference sounds subtle.
-
-It isn’t.
+Instead of writing code, you're designing systems that produce code.
 
 ## The Future of AI Development
 
 As these tools mature, the engineers who get the most value from them will not be the best prompt engineers.
 
-They will be the best **orchestrators**.
+They will be the best orchestrators.
 
 The people who understand:
 
@@ -289,20 +248,8 @@ The people who understand:
 
 In other words:
 
-The engineers who treat AI like **infrastructure**, not coworkers.
+The engineers who treat AI like infrastructure, not junior coworkers.
 
 ## Claude Is Not Your Junior Developer
 
-Claude is a component.
-
-A powerful one.
-
-But still just a component.
-
-Treat it like an employee and you will constantly fight the system.
-
-Treat it like a **programmable subsystem**, and suddenly you’re building something much more interesting.
-
-Not AI-assisted coding.
-
-An **AI development environment**.
+Claude is a component (a really powerful component, but a component nonetheless). Treat it like an employee and you will constantly fight the system. Treat it like a programmable subsystem, and suddenly you’re building something much more interesting.
