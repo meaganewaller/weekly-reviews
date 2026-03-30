@@ -1,0 +1,326 @@
+{
+  "schema_version": "1.0.0",
+  "week": {
+    "start": "2026-03-23",
+    "end": "2026-03-29",
+    "generated_at": "2026-03-30T16:09:59.225810Z"
+  },
+  "totals": {
+    "events": 925,
+    "sessions": 31,
+    "projects_touched": 4,
+    "writes": 193,
+    "failures": 33,
+    "large_changes": 3,
+    "reversals": 12,
+    "decisions_documented": 0,
+    "decisions_from_journal": 0,
+    "decisions_from_events": 0,
+    "test_runs": 87,
+    "dependency_changes": 1,
+    "files_modified": 63
+  },
+  "derived_metrics": {
+    "failure_rate": 0.0357,
+    "test_stability": {
+      "stable_session_rate": 1.0,
+      "stable_session_runs": 2,
+      "stable_session_passed": 2,
+      "raw_rate": 0.5172,
+      "raw_runs": 87,
+      "raw_passed": 45,
+      "sqlite_environmental_errors": 3,
+      "session_patterns": {
+        "stable": 1,
+        "dev_iteration": 2,
+        "mixed": 3
+      }
+    },
+    "test_counts": {
+      "passed": 50520,
+      "failed": 33,
+      "skipped": 62,
+      "total": 50615
+    }
+  },
+  "projects": [
+    {
+      "project": "pull",
+      "events": 633,
+      "sessions": 10,
+      "writes": 115,
+      "failures": 20,
+      "tradeoffs": 0,
+      "large_changes": 1,
+      "reversals": 12
+    },
+    {
+      "project": "dotfiles",
+      "events": 229,
+      "sessions": 8,
+      "writes": 66,
+      "failures": 12,
+      "tradeoffs": 0,
+      "large_changes": 2,
+      "reversals": 0
+    },
+    {
+      "project": "example",
+      "events": 46,
+      "sessions": 1,
+      "writes": 12,
+      "failures": 1,
+      "tradeoffs": 0,
+      "large_changes": 0,
+      "reversals": 0
+    },
+    {
+      "project": "unknown",
+      "events": 17,
+      "sessions": 12,
+      "writes": 0,
+      "failures": 0,
+      "tradeoffs": 0,
+      "large_changes": 0,
+      "reversals": 0
+    }
+  ],
+  "events_by_type": {
+    "tool_read": 237,
+    "cue_fired": 208,
+    "tool_write": 193,
+    "test_run": 87,
+    "cue_matched": 66,
+    "tool_failure": 33,
+    "session_start": 27,
+    "session_end": 27,
+    "session_duration": 22,
+    "reversal": 12,
+    "large_change": 5,
+    "context_compact": 2,
+    "session_health": 2,
+    "skill_invoked": 2,
+    "prompt_opinion": 1,
+    "dependency_change": 1
+  },
+  "top_friction_domains": [
+    {
+      "domain": "state",
+      "count": 25
+    },
+    {
+      "domain": "dependency",
+      "count": 4
+    },
+    {
+      "domain": "type",
+      "count": 2
+    },
+    {
+      "domain": "testing",
+      "count": 2
+    }
+  ],
+  "top_friction_subdomains": [
+    {
+      "subdomain": "state:command-failed",
+      "count": 17
+    },
+    {
+      "subdomain": "state:type-mismatch",
+      "count": 4
+    },
+    {
+      "subdomain": "dependency:ruby-bundler",
+      "count": 4
+    },
+    {
+      "subdomain": "state:file-not-found",
+      "count": 4
+    },
+    {
+      "subdomain": "type:ruby-sorbet",
+      "count": 2
+    },
+    {
+      "subdomain": "testing:assertion",
+      "count": 2
+    }
+  ],
+  "top_principles_invoked": [],
+  "decisions": {
+    "from_journal": [],
+    "total_from_journal": 0,
+    "total_from_events": 0,
+    "capture_sources": []
+  },
+  "top_skills_used": [
+    {
+      "skill": "application development",
+      "count": 182
+    },
+    {
+      "skill": "developer tooling",
+      "count": 10
+    },
+    {
+      "skill": "domain modeling",
+      "count": 1
+    }
+  ],
+  "top_files_modified": [
+    "/Users/meagan.waller/.claude/plans/mellow-singing-kettle.md",
+    "/Users/meagan.waller/.claude/reviews/week-of-2026-03-23/review.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/README.md",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PostToolUse/ai-guardrails.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PostToolUse/impact-extractor.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PostToolUseFailure/skill-gap-detector.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PreToolUse/agent-spawn-tracker.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PreToolUse/block-destructive.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PreToolUse/exfiltration-check.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PreToolUse/secret-scanner.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/PreToolUse/uncommitted-change-guard.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/SessionStart/branch-staleness-check.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/Stop/cost-tracker.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/hooks/common/validate-path.sh",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/home/.claude/settings/common/hooks.jsonc",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/test/hooks/hook-contracts.bats",
+    "/Users/meagan.waller/github/meaganewaller/.dotfiles/test/hooks/hook-health.bats",
+    "/Users/meagan.waller/workspace/db-pull-example/Gemfile",
+    "/Users/meagan.waller/workspace/db-pull-example/config/initializers/database_pull_instrumentation.rb",
+    "/Users/meagan.waller/workspace/db-pull-example/config/initializers/opentelemetry.rb"
+  ],
+  "cue_engagement": {
+    "total_fires": 208,
+    "unique_cues_fired": 15,
+    "by_cue": [
+      {
+        "cue": "code-quality",
+        "count": 19
+      },
+      {
+        "cue": "file-verification",
+        "count": 19
+      },
+      {
+        "cue": "migration",
+        "count": 19
+      },
+      {
+        "cue": "commit",
+        "count": 18
+      },
+      {
+        "cue": "env",
+        "count": 18
+      },
+      {
+        "cue": "testing",
+        "count": 18
+      },
+      {
+        "cue": "type-checking",
+        "count": 18
+      },
+      {
+        "cue": "shell-scripts",
+        "count": 16
+      },
+      {
+        "cue": "principles",
+        "count": 12
+      },
+      {
+        "cue": "model-first",
+        "count": 12
+      }
+    ],
+    "by_trigger": [
+      {
+        "trigger": "prompt",
+        "count": 145
+      },
+      {
+        "trigger": "bash",
+        "count": 48
+      },
+      {
+        "trigger": "file",
+        "count": 12
+      },
+      {
+        "trigger": "subagent",
+        "count": 3
+      }
+    ]
+  },
+  "session_duration": {
+    "sessions_tracked": 16,
+    "total_minutes": 2662,
+    "average_minutes": 166.4,
+    "median_minutes": 25,
+    "longest_session": 1185,
+    "by_category": [
+      {
+        "category": "quick",
+        "count": 5
+      },
+      {
+        "category": "short",
+        "count": 8
+      },
+      {
+        "category": "medium",
+        "count": 1
+      },
+      {
+        "category": "marathon",
+        "count": 2
+      }
+    ],
+    "by_project": [
+      {
+        "project": "dotfiles",
+        "sessions": 5,
+        "avg_minutes": 222.4
+      },
+      {
+        "project": "example",
+        "sessions": 1,
+        "avg_minutes": 25.0
+      },
+      {
+        "project": "pull",
+        "sessions": 8,
+        "avg_minutes": 42.4
+      },
+      {
+        "project": "unknown",
+        "sessions": 2,
+        "avg_minutes": 593.0
+      }
+    ]
+  },
+  "skill_usage": {
+    "total_invocations": 2,
+    "unique_skills": 1,
+    "by_skill": [
+      {
+        "skill": "update-changelog",
+        "count": 2
+      }
+    ]
+  },
+  "context_compaction": {
+    "total_compactions": 2,
+    "sessions_with_compaction": 2,
+    "avg_compactions_per_session": 1.0,
+    "total_bytes_compacted": 5423148,
+    "by_project": [
+      {
+        "project": "pull",
+        "compactions": 2
+      }
+    ]
+  }
+}

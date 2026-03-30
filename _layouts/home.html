@@ -2,8 +2,8 @@
 layout: default
 ---
 
-{% assign sorted_reviews = site.reviews | sort "date" | reverse %}
-{% assign sorted_posts = site.posts | sort "date" | reverse %}
+{% assign sorted_reviews = site.reviews | sort: "date" | reverse %}
+{% assign sorted_posts = site.posts | sort: "date" | reverse %}
 <div class="prose prose-xl font-normal mb-8">
   {{content}}
 </div>
